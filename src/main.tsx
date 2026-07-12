@@ -4,6 +4,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import "./landing.css";
+import "./school.css";
+import { installSchoolEnhancements } from "./school-enhancements.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -81,3 +83,5 @@ createRoot(rootElement).render(
     </ErrorBoundary>
   </StrictMode>,
 );
+
+installSchoolEnhancements();
