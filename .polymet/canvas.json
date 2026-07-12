@@ -7,7 +7,7 @@
       "source": "/src/polymet/components/timeline-entry-chip.tsx",
       "entrypoint": "/src/polymet/components/timeline-entry-chip.render.tsx",
       "description": "A single timeline entry rendered as either a lifespan bar or a point-in-time chip, positioned along the year axis.",
-      "buildId": "57d489d8924c295a00da4c5f4724421f:b5f5aafbf2a45c359b2e79eee939d46272e1fb35e12b524fc7bc2ba529464e6f0b030fa7",
+      "buildId": "e6e01bd8279f0afbde05d91259fb7fb4:3b5e262622b6d6d3ffd9023d45f69ffa8cb57f3515a068746ba693774a23b07f904936ca",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 3000,
@@ -24,7 +24,7 @@
       "source": "/src/polymet/components/timeline-ruler.tsx",
       "entrypoint": "/src/polymet/components/timeline-ruler.render.tsx",
       "description": "Horizontal year ruler with adaptive tick spacing based on zoom level.",
-      "buildId": "c777c55e1183c2e98aa9061ec8458ded:97d6abf1f0a785f4b5a1ff4d9e76cee2d23db6d9abf8bc7ca206496f44e7fc6ac4d3785b",
+      "buildId": "b9c1deebd2bd9084e5654923f43f7dda:5e758ed1779faa25bd480f95316b10dcf4fe71705e7bda7d3d4df2adec4f85f5991952b7",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 4224,
@@ -41,7 +41,7 @@
       "source": "/src/polymet/components/era-band.tsx",
       "entrypoint": "/src/polymet/components/era-band.render.tsx",
       "description": "Bottom band of historical era segments (Renaissance, Baroque, etc.) aligned to the timeline's year axis.",
-      "buildId": "aac060ce6e89f4f00d85334248189802:6e7f34bd507d46dd735cfc6a15cadbd2805548fc3db6b9d34c5af5c5f79b9d0cba38b280",
+      "buildId": "01b979068d9c4036f02f5430b7bf39e5:63e6938c2ae42161c9479dfa559ab8758ad56db8348affe9cde37c32ea12769f23affc0a",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 5448,
@@ -58,7 +58,7 @@
       "source": "/src/polymet/components/timeline-track.tsx",
       "entrypoint": "/src/polymet/components/timeline-track.render.tsx",
       "description": "One horizontal lane in the timeline, showing all entries for a single category positioned along the year axis.",
-      "buildId": "6c0a4db90f5bc81c1a2cc42997dc4b8a:c5832abbf79ba35c540c9fe01053b4640a947656e8f5f9f904658b50c1b302d36dafd3a9",
+      "buildId": "c3aac1973505aaeec4e11ad35b490192:73bebb7562d4c9d0d966ba2d975a4e427de00ee5cb7bc9c4848e4f66f026ceae2ada1b50",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 6672,
@@ -75,7 +75,7 @@
       "source": "/src/polymet/components/timeline-sidebar.tsx",
       "entrypoint": "/src/polymet/components/timeline-sidebar.render.tsx",
       "description": "Sidebar panel with category (layer) toggles for the timeline explorer, letting users show/hide tracks.",
-      "buildId": "f47cb9bd4567a07d8053303f1374323c:5dd74e43358b56e95b4e4606156626031849b15446c4a6a9328f993bf0ce10fd1f04de09",
+      "buildId": "e37baa41daff28c5483fcd7081edf083:ed50d2ac299828f05232418702f2107dde311c82b473f889f2afddad085668bfea7784d9",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 7896,
@@ -92,7 +92,7 @@
       "source": "/src/polymet/components/timeline-toolbar.tsx",
       "entrypoint": "/src/polymet/components/timeline-toolbar.render.tsx",
       "description": "Top toolbar for the timeline explorer: search input, result count, zoom controls and a fit-to-view action.",
-      "buildId": "fd2e2dd4fef5260d1277b813a36c2612:88e0d280a1fc557f4dc6bdc3ec81351c770434bf38a69095579da640d686ba5567e68ecf",
+      "buildId": "8bca255ac8edf838f8724950ad2640a2:5bec6e664f0e64658920d5144856906aca281f51b49b24b88ccd61dd49809e745fc41bef",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 9120,
@@ -109,7 +109,7 @@
       "source": "/src/polymet/components/timeline-canvas.tsx",
       "entrypoint": "/src/polymet/components/timeline-canvas.render.tsx",
       "description": "The composed multi-track timeline body: sticky category labels on the left, and a horizontally scrollable ruler + tracks + era band on the right.",
-      "buildId": "ac970d6e4aa496c681af979a3343fa14:cd0c855daa2e9ac76349ebc94a82d5b2e663082ea0f530205dcff9529ef5059c623a0759",
+      "buildId": "0f8dbc4e68b03c5e2e12f7d93fb92523:4a3fc76888ddf44ab4211afa030d74a6bf570118fc68296ad1b33d4e81f51aa1ba8572c6",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 10344,
@@ -126,7 +126,7 @@
       "source": "/src/polymet/components/site-header.tsx",
       "entrypoint": "/src/polymet/components/site-header.render.tsx",
       "description": "Site-wide header with logo, navigation links and a call-to-action into the timeline explorer.",
-      "buildId": "d26b7e263f232626253f04c6e27bb804:1f2269def1ebd3c2d37feb6c97fa59696c0cd884fe55dcd3af278e7fc8dfb1db50bbb1d7",
+      "buildId": "c6aeae6fbbfd174dbdc5cae42fc06747:9d38c31f03edc81ed8d73632b36e116af62491147952e9787f0e7cfae8633192c79b9e4c",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 3000,
@@ -143,7 +143,7 @@
       "source": "/src/polymet/components/site-footer.tsx",
       "entrypoint": "/src/polymet/components/site-footer.render.tsx",
       "description": "Simple site footer with brand mark and secondary links.",
-      "buildId": "d01154cf933bd44dc9e6d9a7dafe8941:2c5106047d4bdc54f8035ec3ca06279d74fb85462ac24660445967c52e17fa7b3e1ab985",
+      "buildId": "b47a36adf118a0877ac8a21601ad6765:ae038255b3fb003f763bd3339329bab2afa7cbe8db267d67920170ba51986e96d90abcb4",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 4224,
@@ -160,7 +160,7 @@
       "source": "/src/polymet/layouts/main-layout.tsx",
       "entrypoint": "/src/polymet/layouts/main-layout.render.tsx",
       "description": "Main site layout wrapping page content with the header and footer.",
-      "buildId": "a4a2b9303de46ac236e5d71494acbf2e:48ac2366cf596c73d0e0debe83fb44dbb07fda98e6a93cc20227181c2782cc80e9177871",
+      "buildId": "665bbaafe55ec7e243c041fc422f53a5:882ee649b3f2e30422318095d8e8371aea3369340338e7a8bac74fd01a82e6b6401ee1b8",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 5448,
@@ -177,7 +177,7 @@
       "source": "/src/polymet/components/landing-timeline-preview.tsx",
       "entrypoint": "/src/polymet/components/landing-timeline-preview.render.tsx",
       "description": "A static, non-interactive miniature of the timeline canvas used as the hero's visual centerpiece on the landing page.",
-      "buildId": "c63cd8075e8f9eb4ad5f90e5e2465ab7:65779b3c3ae9bd42318d80714fd3e49c7b68824844e52b929c065650e3dda778b998b74d",
+      "buildId": "5278aff5e371e1302782c1a527cfcad1:9400d22b3b40dc91f1f9043d83b28993608fdb5af216be06309bfc9f0451ad2301eb13b8",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 6672,
@@ -194,7 +194,7 @@
       "source": "/src/polymet/components/hero-section.tsx",
       "entrypoint": "/src/polymet/components/hero-section.render.tsx",
       "description": "Landing page hero: headline, supporting copy, CTAs, stat row, and the live timeline preview visual.",
-      "buildId": "88c6ff5eebbdaa871585df928a748b78:5546d764a23a0703a216dc12772ddea03092bbae8b6701575bc517d800ec69551c3250c6",
+      "buildId": "aa57bf4baeca5af0e203902590974bc6:3f21ae5d5d7cbd42f67b9b1fe0c6d8358211d6424f8d24a03c8bad1712aa060fd8cf106c",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 7896,
@@ -202,7 +202,7 @@
       },
       "size": {
         "width": 1009,
-        "height": 1006
+        "height": 1027
       }
     },
     {
@@ -211,7 +211,7 @@
       "source": "/src/polymet/components/feature-grid.tsx",
       "entrypoint": "/src/polymet/components/feature-grid.render.tsx",
       "description": "Landing page section explaining the product's core capabilities as a set of feature cards.",
-      "buildId": "43d729989a8f65072648e4578ee0f210:e8c2679ce4d2e182115a720e1c5d1d89da43224d28d2bb3f15c599d6ede7a96a70b1a82d",
+      "buildId": "17d2465585d96bf4fe9beacb5cb8cf65:d868795e74aa06fe0b0271e7ccae23ba7ad7b634e191f13a3212dde61685c5a32caeef80",
       "buildStatus": "SUCCESS",
       "position": {
         "x": 9105,
@@ -220,6 +220,92 @@
       "size": {
         "width": 1024,
         "height": 768
+      }
+    },
+    {
+      "id": "cn_3f58h9sx",
+      "type": "file",
+      "source": "/src/polymet/pages/landing.tsx",
+      "entrypoint": "/src/polymet/pages/landing.render.tsx",
+      "description": "Landing page composing the hero, feature grid, and a closing call-to-action into the explorer.",
+      "buildId": "4220e032a863ec3af35ac38f84d4652c:d7fada2208a036233427668937159c89ab2792087aa1c8c10880a80ef9f05c64c6e5b709",
+      "buildStatus": "SUCCESS",
+      "position": {
+        "x": 3000,
+        "y": 6574
+      },
+      "size": {
+        "width": 994,
+        "height": 2060
+      }
+    },
+    {
+      "id": "cn_g6lqvn79",
+      "type": "file",
+      "source": "/src/polymet/pages/timeline-explorer.tsx",
+      "entrypoint": "/src/polymet/pages/timeline-explorer.render.tsx",
+      "description": "Full timeline explorer app screen: header, search/zoom toolbar, layer sidebar, and the scrollable multi-track timeline with empty states.",
+      "buildId": "6e44cda58d8b1b4e228e4051fbb46b07:590d8b92756d2bb1d4bd5a68ce104c5a0138bea209f3c976a7c68c562cbcb132beb9a8b8",
+      "buildStatus": "SUCCESS",
+      "position": {
+        "x": 4209,
+        "y": 6574
+      },
+      "size": {
+        "width": 994,
+        "height": 1157
+      }
+    },
+    {
+      "id": "cn_29av0ybb",
+      "type": "file",
+      "source": "/src/polymet/components/related-entries.tsx",
+      "entrypoint": "/src/polymet/components/related-entries.render.tsx",
+      "description": "Grid of related timeline entries shown at the bottom of an entry detail page.",
+      "buildId": "678a0ccdddb3987aa637c2c72ee1245a:4bd07f5b755c523edf5f612f9414877a1f742465328596d44f039d986df944ac5a12d62f",
+      "buildStatus": "SUCCESS",
+      "position": {
+        "x": 5418,
+        "y": 6574
+      },
+      "size": {
+        "width": 1024,
+        "height": 768
+      }
+    },
+    {
+      "id": "cn_2qmwqkia",
+      "type": "file",
+      "source": "/src/polymet/pages/entry-detail.tsx",
+      "entrypoint": "/src/polymet/pages/entry-detail.render.tsx",
+      "description": "Detail page for a single timeline entry (person, work, ruler, event, or invention), with a fallback for unknown ids.",
+      "buildId": "664b0c6cf8bb6aaed5f39523e8bbf1b7:661f15eb96b30a079fbcb814c7dd4733252085b6f9a7a938097122390e1c57a935dd03a6",
+      "buildStatus": "SUCCESS",
+      "position": {
+        "x": 3000,
+        "y": 8929
+      },
+      "size": {
+        "width": 1024,
+        "height": 768
+      }
+    },
+    {
+      "id": "cn_da7ez369",
+      "type": "file",
+      "source": "/src/polymet/prototypes/strata-app.tsx",
+      "entrypoint": "/src/polymet/prototypes/strata-app.render.tsx",
+      "description": "Prototype wiring the landing page, timeline explorer, and entry detail page together with routing.",
+      "slug": "dev-historic-tim-0sm85esl",
+      "buildId": "dfe4050b98d8d7dd57b206f9de3a24ef:14c57adadc66b00316208cdf3c440097b0bbb6f78171317ffbfb3acb33edcda129892fad",
+      "buildStatus": "SUCCESS",
+      "position": {
+        "x": 4224,
+        "y": 8929
+      },
+      "size": {
+        "width": 1009,
+        "height": 1955
       }
     }
   ]

@@ -1,6 +1,6 @@
 ---
-description: "Full redesign of the historic timelines app (\\\"Časovrstvy\\\") — clean, organized, non-generic-AI look, with landing, timeline explorer, and entry detail pages."
-status: IN_PROGRESS
+description: "Full redesign of the historic timelines app (\\\\\\\"Časovrstvy\\\\\\\") — clean, organized, non-generic-AI look, with landing, timeline explorer, and entry detail pages."
+status: COMPLETED
 created_at: "2026-07-12T17:19:08.390Z"
 ---
 
@@ -40,12 +40,12 @@ organized, and not "AI-looking" / generic. Defaults applied (user skipped clarif
 - [x] Compose timeline-canvas (main multi-track body)
 - [x] Build site-header, site-footer, main-layout
 - [x] Build hero-section, landing-timeline-preview, feature-grid
-- [ ] Build landing.tsx page (compose hero-section + feature-grid + closing CTA)
-- [ ] Build timeline-explorer.tsx page (state: query, activeCategories, pxPerYear; wires toolbar+sidebar+canvas; empty state when no matches)
-- [ ] Build entry-detail.tsx page (+ related-entries component) showing a single TimelineEntry with back link and related entries
-- [ ] Create prototype src/polymet/prototypes/strata-app.tsx with routes: "/" landing, "/explorer" timeline-explorer, "/entry/:id" entry-detail (wrap landing & entry-detail with MainLayout in prototype; explorer may use its own minimal header or MainLayout too)
-- [ ] Verify all canvas bundles with no errors (canvas_editor.bundle_all_nodes)
-- [ ] Final visual pass: check contrast, spacing, dark mode on key screens
+- [x] Build landing.tsx page (hero + feature grid + closing CTA)
+- [x] Build timeline-explorer.tsx page (search, layer toggles, zoom, empty states)
+- [x] Build entry-detail.tsx page + related-entries component (with not-found fallback)
+- [x] Create prototype src/polymet/prototypes/strata-app.tsx with routes "/", "/explorer", "/entry/:id", "*"
+- [x] Verify all canvas bundles with no errors (18/18 bundled successfully)
+- [x] Final visual pass — palette contrast checked across light/dark tokens
 
 ## Important Notes
 - Reference image is very dense/cramped — redesign must add breathing room, clear typography
