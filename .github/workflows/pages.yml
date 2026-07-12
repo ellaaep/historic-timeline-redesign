@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
   actions: read
@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Restore Vite source HTML
+        run: cp app.template.html index.html
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -43,6 +46,20 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+
+      - name: Mirror production build to repository root
+        run: |
+          rm -rf assets
+          cp dist/index.html index.html
+          cp -R dist/assets assets
+          if [ -f dist/favicon.svg ]; then cp dist/favicon.svg favicon.svg; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html assets favicon.svg
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish production build"
+            git push
+          fi
 
   deploy:
     environment:
