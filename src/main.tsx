@@ -6,6 +6,7 @@ import "./index.css";
 import "./landing.css";
 import "./school.css";
 import { installSchoolEnhancements } from "./school-enhancements.ts";
+import { installSchoolLayout } from "./school-layout.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -85,3 +86,4 @@ createRoot(rootElement).render(
 );
 
 installSchoolEnhancements();
+installSchoolLayout();
