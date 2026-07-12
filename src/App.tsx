@@ -1,24 +1,32 @@
 import {
+  ArrowDown,
   BookOpen,
+  CalendarRange,
   Castle,
   Check,
+  ChevronDown,
   Crown,
   ExternalLink,
+  Eye,
   Focus,
   Globe2,
+  GraduationCap,
   Landmark,
+  Layers3,
   Lightbulb,
   LoaderCircle,
   Maximize2,
   Menu,
   Minus,
   Moon,
+  MousePointer2,
   PanelLeftClose,
   PanelLeftOpen,
   Plus,
   RotateCcw,
   Search,
   SlidersHorizontal,
+  Sparkles,
   Sun,
   UserRound,
   Users,
@@ -42,16 +50,21 @@ import {
   RULERS,
   WORKS,
   type LaneId,
+  type Period,
   type TimelineItem,
 } from "./data";
+import { EXTRA_EVENTS, EXTRA_PERIODS } from "./enrichment";
 
 const CURRENT_YEAR = 2026;
 const HISTORY_MIN = -12000;
 const HISTORY_MAX = CURRENT_YEAR;
 const MIN_SPAN = 6;
-const AUTHOR_STORAGE = "casovrstvy-redesign-authors-v1";
-const CUSTOM_STORAGE = "casovrstvy-redesign-custom-v1";
+const AUTHOR_STORAGE = "casovrstvy-redesign-authors-v2";
+const CUSTOM_STORAGE = "casovrstvy-redesign-custom-v2";
 const THEME_STORAGE = "casovrstvy-redesign-theme";
+const DENSITY_STORAGE = "casovrstvy-redesign-density";
+
+type Density = "essentials" | "balanced" | "complete";
 
 const LANE_ORDER: LaneId[] = [
   "authors",
@@ -65,14 +78,14 @@ const LANE_ORDER: LaneId[] = [
 ];
 
 const LANE_HEIGHTS: Record<LaneId, number> = {
-  authors: 184,
-  works: 164,
-  rulers: 138,
-  czech: 156,
-  world: 156,
-  tech: 156,
-  monuments: 156,
-  figures: 138,
+  authors: 190,
+  works: 168,
+  rulers: 142,
+  czech: 162,
+  world: 162,
+  tech: 162,
+  monuments: 162,
+  figures: 142,
 };
 
 const laneIcons: Record<LaneId, typeof Users> = {
@@ -112,7 +125,7 @@ interface LayoutEntry {
 const wikiMemory = new Map<string, WikiMeta>();
 let wikiDisk: Record<string, WikiMeta> = {};
 try {
-  wikiDisk = JSON.parse(localStorage.getItem("casovrstvy-redesign-wiki-v1") || "{}");
+  wikiDisk = JSON.parse(localStorage.getItem("casovrstvy-redesign-wiki-v2") || "{}");
   Object.entries(wikiDisk).forEach(([key, value]) => wikiMemory.set(key, value));
 } catch {
   wikiDisk = {};
@@ -227,7 +240,7 @@ async function fetchWikiMeta(title: string): Promise<WikiMeta> {
   wikiMemory.set(key, result);
   wikiDisk[key] = result;
   try {
-    localStorage.setItem("casovrstvy-redesign-wiki-v1", JSON.stringify(wikiDisk));
+    localStorage.setItem("casovrstvy-redesign-wiki-v2", JSON.stringify(wikiDisk));
   } catch {
     // Storage can be unavailable in private browsing.
   }
@@ -278,6 +291,8 @@ function loadCustomData(): CustomData {
 
 function App() {
   const viewportRef = useRef<HTMLDivElement>(null);
+  const timelineSectionRef = useRef<HTMLElement>(null);
+  const timelineFrameRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<null | { x: number; start: number; end: number; pointerId: number }>(null);
 
   const [dark, setDark] = useState(() => localStorage.getItem(THEME_STORAGE) === "dark");
@@ -297,6 +312,13 @@ function App() {
   const [importing, setImporting] = useState(false);
   const [selectedAuthors, setSelectedAuthors] = useState<Set<string>>(loadSelectedAuthors);
   const [customData, setCustomData] = useState<CustomData>(loadCustomData);
+  const [density, setDensity] = useState<Density>(() => {
+    const stored = localStorage.getItem(DENSITY_STORAGE);
+    return stored === "essentials" || stored === "complete" ? stored : "balanced";
+  });
+  const [eraMenuOpen, setEraMenuOpen] = useState(false);
+  const [customFrom, setCustomFrom] = useState("1350");
+  const [customTo, setCustomTo] = useState(String(HISTORY_MAX));
   const [filters, setFilters] = useState<Record<LaneId, boolean>>({
     authors: true,
     works: true,
@@ -310,6 +332,8 @@ function App() {
 
   const span = viewEnd - viewStart;
   const crosshairYear = viewStart + span * crosshairX;
+  const allPeriods = useMemo<Period[]>(() => [...PERIODS, ...EXTRA_PERIODS], []);
+  const allEvents = useMemo<TimelineItem[]>(() => [...EVENTS, ...EXTRA_EVENTS], []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -323,6 +347,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem(CUSTOM_STORAGE, JSON.stringify(customData));
   }, [customData]);
+
+  useEffect(() => {
+    localStorage.setItem(DENSITY_STORAGE, density);
+  }, [density]);
 
   useEffect(() => {
     const element = viewportRef.current;
@@ -340,7 +368,7 @@ function App() {
 
   const laneTops = useMemo(() => {
     const result = {} as Record<LaneId, number>;
-    let top = 42;
+    let top = 24;
     for (const lane of LANE_ORDER) {
       result[lane] = top;
       top += LANE_HEIGHTS[lane];
@@ -349,11 +377,11 @@ function App() {
   }, []);
 
   const contentHeight =
-    42 + LANE_ORDER.reduce((total, lane) => total + LANE_HEIGHTS[lane], 0) + 118;
+    24 + LANE_ORDER.reduce((total, lane) => total + LANE_HEIGHTS[lane], 0) + 34;
 
   const clampRange = useCallback((start: number, end: number) => {
     let nextSpan = Math.max(MIN_SPAN, Math.min(HISTORY_MAX - HISTORY_MIN, end - start));
-    let center = (start + end) / 2;
+    const center = (start + end) / 2;
     start = center - nextSpan / 2;
     end = center + nextSpan / 2;
     if (start < HISTORY_MIN) {
@@ -368,6 +396,8 @@ function App() {
     if (nextSpan < MIN_SPAN) end = start + MIN_SPAN;
     setViewStart(start);
     setViewEnd(end);
+    setCustomFrom(String(Math.round(start)));
+    setCustomTo(String(Math.round(end)));
   }, []);
 
   const zoomAt = useCallback(
@@ -380,6 +410,23 @@ function App() {
     [clampRange, viewEnd, viewStart],
   );
 
+  const scrollToTimeline = () => {
+    timelineSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const applyCustomRange = () => {
+    const start = Number(customFrom);
+    const end = Number(customTo);
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return;
+    clampRange(start, end);
+    setEraMenuOpen(false);
+  };
+
+  const applyPeriod = (period: Period) => {
+    clampRange(period.start, period.end);
+    setEraMenuOpen(false);
+  };
+
   const visibleSelectedAuthors = useMemo(
     () => allAuthors.filter((item) => selectedAuthors.has(item.id)),
     [allAuthors, selectedAuthors],
@@ -390,18 +437,22 @@ function App() {
       authors: visibleSelectedAuthors,
       works: allWorks.filter((item) => selectedAuthors.has(item.authorId || "")),
       rulers: RULERS,
-      czech: EVENTS.filter((item) => item.lane === "czech"),
-      world: EVENTS.filter((item) => item.lane === "world"),
-      tech: EVENTS.filter((item) => item.lane === "tech"),
-      monuments: EVENTS.filter((item) => item.lane === "monuments"),
-      figures: FIGURES,
+      czech: allEvents.filter((item) => item.lane === "czech"),
+      world: allEvents.filter((item) => item.lane === "world"),
+      tech: allEvents.filter((item) => item.lane === "tech"),
+      monuments: allEvents.filter((item) => item.lane === "monuments"),
+      figures: [...FIGURES, ...allEvents.filter((item) => item.lane === "figures")],
     }),
-    [allWorks, selectedAuthors, visibleSelectedAuthors],
+    [allEvents, allWorks, selectedAuthors, visibleSelectedAuthors],
   );
 
   const searchNormalized = normalize(query);
 
-  const threshold = span > 5000 ? 5 : span > 1800 ? 4 : span > 700 ? 3 : 1;
+  const threshold = useMemo(() => {
+    if (density === "essentials") return 5;
+    if (density === "complete") return 1;
+    return span > 5000 ? 5 : span > 1800 ? 4 : span > 700 ? 3 : 1;
+  }, [density, span]);
 
   const layoutLane = useCallback(
     (lane: LaneId) => {
@@ -507,7 +558,7 @@ function App() {
     return result;
   }, [span, viewEnd, viewStart]);
 
-  const visiblePeriods = PERIODS.filter(
+  const visiblePeriods = allPeriods.filter(
     (period) => period.end >= viewStart && period.start <= viewEnd,
   );
 
@@ -634,7 +685,7 @@ function App() {
 
   const toggleFullscreen = async () => {
     try {
-      if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+      if (!document.fullscreenElement) await timelineFrameRef.current?.requestFullscreen();
       else await document.exitFullscreen();
     } catch {
       // Some browsers can deny fullscreen without user permission.
@@ -642,7 +693,7 @@ function App() {
   };
 
   const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    if ((event.target as HTMLElement).closest("button,input,a,.dialog,.detail-panel")) return;
+    if ((event.target as HTMLElement).closest("button,input,a,.dialog,.detail-panel,.period-strip")) return;
     event.preventDefault();
     const rect = event.currentTarget.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
@@ -656,7 +707,7 @@ function App() {
   };
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0 || (event.target as HTMLElement).closest("button,input,a,.detail-panel")) return;
+    if (event.button !== 0 || (event.target as HTMLElement).closest("button,input,a,.detail-panel,.period-strip")) return;
     dragRef.current = {
       x: event.clientX,
       start: viewStart,
@@ -741,240 +792,368 @@ function App() {
   };
 
   return (
-    <div
-      className={`app-shell${sidebarCollapsed ? " sidebar-collapsed" : ""}${
-        timelineOnly ? " timeline-only" : ""
-      }`}
-    >
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brand-mark"><Landmark /></div>
-          <div className="brand-copy">
-            <strong>Časovrstvy</strong>
-            <span>historie v souvislostech</span>
-          </div>
-          <button
-            className="icon-button collapse-button"
-            onClick={() => setSidebarCollapsed((value) => !value)}
-            title="Skrýt nebo zobrazit menu"
-          >
-            {sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-          </button>
-        </div>
+    <div className="site-page">
+      {!timelineOnly && (
+        <>
+          <nav className="landing-nav">
+            <a className="landing-brand" href="#top" aria-label="Časovrstvy domů">
+              <span><Landmark /></span>
+              <strong>Časovrstvy</strong>
+            </a>
+            <div className="landing-nav-links">
+              <a href="#how">Jak to funguje</a>
+              <a href="#timeline">Časová osa</a>
+              <button onClick={() => setDark((value) => !value)} title="Změnit barevný režim">
+                {dark ? <Sun /> : <Moon />}
+              </button>
+              <button className="landing-nav-cta" onClick={scrollToTimeline}>Otevřít osu</button>
+            </div>
+          </nav>
 
-        <div className="sidebar-scroll">
-          <p className="sidebar-label">Vrstvy časové osy</p>
-          <div className="filter-list">
-            {LANE_ORDER.map((lane) => {
-              const Icon = laneIcons[lane];
-              return (
-                <button
-                  key={lane}
-                  className={`filter-row${filters[lane] ? " active" : ""}`}
-                  style={{ "--filter-color": LANE_META[lane].color } as React.CSSProperties}
-                  onClick={() => setFilters((current) => ({ ...current, [lane]: !current[lane] }))}
-                  title={LANE_META[lane].label}
-                >
-                  <Icon />
-                  <span>{LANE_META[lane].label}</span>
-                  <i><b /></i>
-                </button>
-              );
-            })}
-          </div>
+          <main id="top" className="landing-main">
+            <section className="hero-section">
+              <div className="hero-copy">
+                <span className="eyebrow"><Sparkles /> INTERAKTIVNÍ VZDĚLÁVACÍ ARCHIV</span>
+                <h1>Vše od historie po literaturu <em>na jednom místě.</em></h1>
+                <p>
+                  Propoj si autory, knihy, vládce, války, vynálezy, stavby i umělecké směry
+                  v jedné časové ose. Získáš kontext, který se z učebnice často ztrácí.
+                </p>
+                <div className="hero-actions">
+                  <button className="primary-cta" onClick={scrollToTimeline}>
+                    Prozkoumat časovou osu <ArrowDown />
+                  </button>
+                  <a className="secondary-cta" href="#how">Jak projekt funguje</a>
+                </div>
+                <div className="hero-proof">
+                  <span><strong>8</strong> tematických vrstev</span>
+                  <span><strong>3</strong> úrovně podrobnosti</span>
+                  <span><strong>12 000+</strong> let souvislostí</span>
+                </div>
+              </div>
 
-          <button className="author-picker-button" onClick={() => setAuthorPickerOpen(true)}>
-            <SlidersHorizontal />
-            <span>Vybrat vlastní autory</span>
-            <small>{selectedAuthors.size}</small>
-          </button>
+              <div className="hero-visual" aria-label="Ukázka časové osy">
+                <div className="hero-window-bar">
+                  <i /><i /><i />
+                  <span>České a světové dějiny</span>
+                </div>
+                <div className="hero-periods">
+                  <span className="hero-period medieval">Středověk <small>476–1492</small></span>
+                  <span className="hero-period renaissance">Renesance <small>1400–1600</small></span>
+                  <span className="hero-period baroque">Baroko <small>1600–1750</small></span>
+                </div>
+                <div className="hero-grid-lines"><i /><i /><i /><i /></div>
+                <div className="hero-sample-card card-one">
+                  <span className="sample-image"><WikiImage title="Karel IV." alt="Karel IV." /></span>
+                  <div><strong>Karel IV.</strong><small>1346–1378</small></div>
+                </div>
+                <div className="hero-sample-card card-two">
+                  <span className="sample-image"><WikiImage title="Objevení Ameriky" alt="Objevení Ameriky" /></span>
+                  <div><strong>Objevení Ameriky</strong><small>1492</small></div>
+                </div>
+                <div className="hero-sample-card card-three">
+                  <span className="sample-image"><WikiImage title="Jan Amos Komenský" alt="Jan Amos Komenský" /></span>
+                  <div><strong>Jan Amos Komenský</strong><small>1592–1670</small></div>
+                </div>
+                <div className="hero-crosshair"><span>1492</span></div>
+              </div>
+            </section>
 
-          <div className="sidebar-note">
-            <strong>Jak pracovat s osou</strong>
-            <p>Kolečkem přibližuješ, tažením se posouváš a kliknutím otevřeš detail.</p>
-          </div>
-        </div>
+            <section className="landing-feature-row">
+              <article><Layers3 /><div><strong>Historie v souvislostech</strong><p>Porovnej, co se ve stejné době dělo v literatuře, politice, vědě a umění.</p></div></article>
+              <article><SlidersHorizontal /><div><strong>Vlastní studijní osa</strong><p>Vyber si autory, vrstvy, období i množství informací podle sebe.</p></div></article>
+              <article><GraduationCap /><div><strong>Pro studenty i učitele</strong><p>Pomůcka pro maturitu, výuku češtiny, dějepisu i projektové hodiny.</p></div></article>
+              <article><MousePointer2 /><div><strong>Interaktivní, ne statická</strong><p>Přibližuj, posouvej, otevírej detaily a sleduj vazby mezi autory a díly.</p></div></article>
+            </section>
 
-        <div className="sidebar-footer">
-          <button onClick={() => setDark((value) => !value)}>
-            {dark ? <Sun /> : <Moon />}
-            <span>{dark ? "Světlý režim" : "Tmavý režim"}</span>
-          </button>
-          <button onClick={() => setTimelineOnly(true)}>
-            <Focus />
-            <span>Pouze osa</span>
-          </button>
-        </div>
-      </aside>
+            <section id="how" className="how-section">
+              <div className="section-heading">
+                <span>JAK TO FUNGUJE</span>
+                <h2>Od rychlého přehledu až po téměř celou historii.</h2>
+                <p>Jedna aplikace, ale pokaždé jiná podle toho, co zrovna potřebuješ vidět.</p>
+              </div>
+              <div className="how-grid">
+                <article><span>01</span><Eye /><h3>Zvol podrobnost</h3><p>„Základy“ nechají jen události, které by měl znát každý. „Podrobně“ zobrazí maximum dostupných dat.</p></article>
+                <article><span>02</span><CalendarRange /><h3>Vyber období</h3><p>Starověk, gotika, renesance, baroko, národní obrození nebo vlastní rozsah od–do.</p></article>
+                <article><span>03</span><Users /><h3>Sestav si autory</h3><p>Vyber katalogové autory nebo načti dalšího autora a jeho díla přímo z Wikipedie a Wikidat.</p></article>
+              </div>
+            </section>
 
-      <main className="main-area">
-        <header className="topbar">
-          <button className="mobile-menu" onClick={() => setSidebarCollapsed((value) => !value)}>
-            <Menu />
-          </button>
-          <div className="title-block">
-            <span>INTERAKTIVNÍ ARCHIV</span>
-            <h1>České a světové dějiny v jedné časové ose</h1>
+            <section className="teacher-section">
+              <div>
+                <span>VYTVOŘENO PRO VÝUKU</span>
+                <h2>Úvod, který vysvětlí projekt. Osa, která ho nechá opravdu používat.</h2>
+              </div>
+              <p>
+                Landing page představí smysl projektu studentům, učitelům i návštěvníkům portfolia.
+                Níže je vložená celá funkční aplikace — a jedním kliknutím ji lze otevřít přes celou obrazovku.
+              </p>
+            </section>
+          </main>
+        </>
+      )}
+
+      <section id="timeline" ref={timelineSectionRef} className="timeline-section">
+        {!timelineOnly && (
+          <div className="timeline-intro">
+            <span>VYZKOUŠEJ SI APLIKACI</span>
+            <h2>Poskládej si vlastní pohled na dějiny.</h2>
+            <p>Začni obdobím, zvol množství informací a potom zapínej jen vrstvy, které tě zajímají.</p>
           </div>
-          <label className="search-box">
-            <Search />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Hledat autora, dílo, událost…"
-            />
-            {query && <button onClick={() => setQuery("")}><X /></button>}
-          </label>
-          <div className="year-chip">
-            <span>Rok</span>
-            <strong>{formatYear(crosshairYear)}</strong>
-          </div>
-          <button className="range-chip" onClick={() => clampRange(1350, HISTORY_MAX)}>
-            <span>Období</span>
-            <strong>{formatYear(viewStart)}–{formatYear(viewEnd)}</strong>
-          </button>
-          <button className="icon-button" onClick={() => zoomAt(1.45)} title="Oddálit"><Minus /></button>
-          <button className="icon-button" onClick={() => zoomAt(0.7)} title="Přiblížit"><Plus /></button>
-          <button className="icon-button" onClick={toggleFullscreen} title="Celá obrazovka"><Maximize2 /></button>
-          <button className="icon-button" onClick={() => setDark((value) => !value)} title="Změnit režim">
-            {dark ? <Sun /> : <Moon />}
-          </button>
-        </header>
+        )}
 
         <div
-          ref={viewportRef}
-          className="timeline-viewport"
-          onWheel={onWheel}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-          onDoubleClick={(event) => {
-            if ((event.target as HTMLElement).closest("button,a,input")) return;
-            const rect = event.currentTarget.getBoundingClientRect();
-            zoomAt(0.5, (event.clientX - rect.left) / rect.width);
-          }}
+          ref={timelineFrameRef}
+          className={`timeline-frame${timelineOnly ? " timeline-only" : ""}`}
         >
-          <div className="timeline-canvas" style={{ height: contentHeight }}>
-            <div
-              className="crosshair-band"
-              style={{ left: `${crosshairX * 100}%` }}
-            />
-            <div
-              className="crosshair-line"
-              style={{ left: `${crosshairX * 100}%` }}
-            >
-              <span>{formatYear(crosshairYear)}</span>
-            </div>
-
-            {gridYears.map((year) => {
-              const left = ((year - viewStart) / span) * 100;
-              return (
-                <div key={year} className="year-marker" style={{ left: `${left}%` }}>
-                  <span>{formatYear(year)}</span>
+          <div className={`app-shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
+            <aside className="sidebar">
+              <div className="brand">
+                <div className="brand-mark"><Landmark /></div>
+                <div className="brand-copy">
+                  <strong>Časovrstvy</strong>
+                  <span>historie v souvislostech</span>
                 </div>
-              );
-            })}
-
-            {LANE_ORDER.map((lane) => {
-              const Icon = laneIcons[lane];
-              return (
-                <section
-                  key={lane}
-                  className={`timeline-lane${filters[lane] ? "" : " is-hidden"}`}
-                  style={{
-                    top: laneTops[lane],
-                    height: LANE_HEIGHTS[lane],
-                    "--lane-color": LANE_META[lane].color,
-                  } as React.CSSProperties}
+                <button
+                  className="icon-button collapse-button"
+                  onClick={() => setSidebarCollapsed((value) => !value)}
+                  title="Skrýt nebo zobrazit menu"
                 >
-                  <div className="lane-heading"><Icon /><span>{LANE_META[lane].label}</span></div>
-                  <div className="lane-axis" />
-                </section>
-              );
-            })}
+                  {sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+                </button>
+              </div>
 
-            <svg className="relation-layer" width={viewportWidth} height={contentHeight}>
-              {relationLines.map((line) => {
-                const bend = line.y1 + (line.y2 - line.y1) * 0.52;
-                return (
-                  <path
-                    key={line.id}
-                    d={`M ${line.x1} ${line.y1} C ${line.x1} ${bend}, ${line.x2} ${bend}, ${line.x2} ${line.y2}`}
+              <div className="sidebar-scroll">
+                <p className="sidebar-label">Množství informací</p>
+                <div className="density-control">
+                  {([
+                    ["essentials", "Základy"],
+                    ["balanced", "Vyváženě"],
+                    ["complete", "Podrobně"],
+                  ] as [Density, string][]).map(([value, label]) => (
+                    <button
+                      key={value}
+                      className={density === value ? "active" : ""}
+                      onClick={() => setDensity(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
+                <p className="sidebar-label layers-label">Vrstvy časové osy</p>
+                <div className="filter-list">
+                  {LANE_ORDER.map((lane) => {
+                    const Icon = laneIcons[lane];
+                    return (
+                      <button
+                        key={lane}
+                        className={`filter-row${filters[lane] ? " active" : ""}`}
+                        style={{ "--filter-color": LANE_META[lane].color } as React.CSSProperties}
+                        onClick={() => setFilters((current) => ({ ...current, [lane]: !current[lane] }))}
+                        title={LANE_META[lane].label}
+                      >
+                        <Icon />
+                        <span>{LANE_META[lane].label}</span>
+                        <i><b /></i>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button className="author-picker-button" onClick={() => setAuthorPickerOpen(true)}>
+                  <SlidersHorizontal />
+                  <span>Vybrat vlastní autory</span>
+                  <small>{selectedAuthors.size}</small>
+                </button>
+
+                <div className="sidebar-range">
+                  <span>Vlastní rozsah</span>
+                  <div><input value={customFrom} onChange={(event) => setCustomFrom(event.target.value)} inputMode="numeric" aria-label="Rok od" /><b>—</b><input value={customTo} onChange={(event) => setCustomTo(event.target.value)} inputMode="numeric" aria-label="Rok do" /></div>
+                  <button onClick={applyCustomRange}>Zobrazit období</button>
+                </div>
+
+                <div className="sidebar-note">
+                  <strong>Jak pracovat s osou</strong>
+                  <p>Kolečkem přibližuješ, tažením se posouváš a kliknutím otevřeš detail.</p>
+                </div>
+              </div>
+
+              <div className="sidebar-footer">
+                <button onClick={() => setDark((value) => !value)}>
+                  {dark ? <Sun /> : <Moon />}
+                  <span>{dark ? "Světlý režim" : "Tmavý režim"}</span>
+                </button>
+                <button onClick={() => setTimelineOnly(true)}>
+                  <Focus />
+                  <span>Pouze osa</span>
+                </button>
+              </div>
+            </aside>
+
+            <main className="main-area">
+              <header className="topbar">
+                <button className="mobile-menu" onClick={() => setSidebarCollapsed((value) => !value)}>
+                  <Menu />
+                </button>
+                <div className="title-block">
+                  <span>INTERAKTIVNÍ ARCHIV</span>
+                  <h1>České a světové dějiny v jedné časové ose</h1>
+                </div>
+                <label className="search-box">
+                  <Search />
+                  <input
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Hledat autora, dílo, událost…"
                   />
-                );
-              })}
-            </svg>
+                  {query && <button onClick={() => setQuery("")}><X /></button>}
+                </label>
+                <div className="year-chip">
+                  <span>Rok</span>
+                  <strong>{formatYear(crosshairYear)}</strong>
+                </div>
+                <div className="era-select-wrap">
+                  <button className="range-chip" onClick={() => setEraMenuOpen((value) => !value)}>
+                    <span>Období</span>
+                    <strong>{formatYear(viewStart)}–{formatYear(viewEnd)}</strong>
+                    <ChevronDown />
+                  </button>
+                  {eraMenuOpen && (
+                    <div className="era-popover">
+                      <header><div><span>RYCHLÝ VÝBĚR</span><strong>Vyber historické období</strong></div><button onClick={() => setEraMenuOpen(false)}><X /></button></header>
+                      <div className="era-groups">
+                        <section><h3>Světové dějiny a směry</h3>{allPeriods.filter((period) => period.scope === "world").map((period) => <button key={period.id} onClick={() => applyPeriod(period)}><i style={{ background: period.color }} /><span>{period.title}</span><small>{formatRange(period.start, period.end)}</small></button>)}</section>
+                        <section><h3>České dějiny</h3>{allPeriods.filter((period) => period.scope === "czech").map((period) => <button key={period.id} onClick={() => applyPeriod(period)}><i style={{ background: period.color }} /><span>{period.title}</span><small>{formatRange(period.start, period.end)}</small></button>)}</section>
+                      </div>
+                      <div className="era-custom"><input value={customFrom} onChange={(event) => setCustomFrom(event.target.value)} aria-label="Rok od" /><span>—</span><input value={customTo} onChange={(event) => setCustomTo(event.target.value)} aria-label="Rok do" /><button onClick={applyCustomRange}>Použít</button></div>
+                    </div>
+                  )}
+                </div>
+                <button className="icon-button" onClick={() => zoomAt(1.45)} title="Oddálit"><Minus /></button>
+                <button className="icon-button" onClick={() => zoomAt(0.7)} title="Přiblížit"><Plus /></button>
+                <button className="icon-button" onClick={toggleFullscreen} title="Celá obrazovka"><Maximize2 /></button>
+                <button className="icon-button" onClick={() => setDark((value) => !value)} title="Změnit režim">
+                  {dark ? <Sun /> : <Moon />}
+                </button>
+              </header>
 
-            {LANE_ORDER.flatMap((lane) => layouts[lane].map(renderCard))}
+              <div
+                ref={viewportRef}
+                className="timeline-viewport"
+                onWheel={onWheel}
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={endDrag}
+                onPointerCancel={endDrag}
+                onDoubleClick={(event) => {
+                  if ((event.target as HTMLElement).closest("button,a,input")) return;
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  zoomAt(0.5, (event.clientX - rect.left) / rect.width);
+                }}
+              >
+                <section className="period-strip">
+                  <div className="period-strip-heading"><Landmark /><span>Historická období a umělecké směry</span></div>
+                  <div className="period-strip-canvas" style={{ width: viewportWidth }}>
+                    {visiblePeriods.map((period) => {
+                      const start = Math.max(period.start, viewStart);
+                      const end = Math.min(period.end, viewEnd);
+                      const left = ((start - viewStart) / span) * viewportWidth;
+                      const width = Math.max(28, ((end - start) / span) * viewportWidth);
+                      return (
+                        <button
+                          key={period.id}
+                          className={`period-card row-${period.row}`}
+                          onClick={() => applyPeriod(period)}
+                          style={{
+                            left,
+                            width,
+                            "--period-color": period.color,
+                          } as React.CSSProperties}
+                          title={`${period.title} · ${formatRange(period.start, period.end)}`}
+                        >
+                          <strong>{period.title}</strong>
+                          <small>{formatRange(period.start, period.end)}</small>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
 
-            <section className="period-area" style={{ top: contentHeight - 112 }}>
-              <div className="lane-heading period-heading"><Landmark /><span>Historická období</span></div>
-              {visiblePeriods.map((period) => {
-                const start = Math.max(period.start, viewStart);
-                const end = Math.min(period.end, viewEnd);
-                const left = ((start - viewStart) / span) * viewportWidth;
-                const width = Math.max(28, ((end - start) / span) * viewportWidth);
-                return (
-                  <a
-                    key={period.id}
-                    className={`period-card row-${period.row}`}
-                    href={wikiUrl(period.wikiTitle)}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      left,
-                      width,
-                      "--period-color": period.color,
-                    } as React.CSSProperties}
-                  >
-                    <strong>{period.title}</strong>
-                    <small>{formatRange(period.start, period.end)}</small>
-                  </a>
-                );
-              })}
-            </section>
+                <div className="timeline-canvas" style={{ height: contentHeight }}>
+                  <div className="crosshair-band" style={{ left: `${crosshairX * 100}%` }} />
+                  <div className="crosshair-line" style={{ left: `${crosshairX * 100}%` }}><span>{formatYear(crosshairYear)}</span></div>
+
+                  {gridYears.map((year) => {
+                    const left = ((year - viewStart) / span) * 100;
+                    return <div key={year} className="year-marker" style={{ left: `${left}%` }}><span>{formatYear(year)}</span></div>;
+                  })}
+
+                  {LANE_ORDER.map((lane) => {
+                    const Icon = laneIcons[lane];
+                    return (
+                      <section key={lane} className={`timeline-lane${filters[lane] ? "" : " is-hidden"}`} style={{ top: laneTops[lane], height: LANE_HEIGHTS[lane], "--lane-color": LANE_META[lane].color } as React.CSSProperties}>
+                        <div className="lane-heading"><Icon /><span>{LANE_META[lane].label}</span></div>
+                        <div className="lane-axis" />
+                      </section>
+                    );
+                  })}
+
+                  <svg className="relation-layer" width={viewportWidth} height={contentHeight}>
+                    {relationLines.map((line) => {
+                      const bend = line.y1 + (line.y2 - line.y1) * 0.52;
+                      return <path key={line.id} d={`M ${line.x1} ${line.y1} C ${line.x1} ${bend}, ${line.x2} ${bend}, ${line.x2} ${line.y2}`} />;
+                    })}
+                  </svg>
+
+                  {LANE_ORDER.flatMap((lane) => layouts[lane].map(renderCard))}
+                </div>
+              </div>
+
+              <div className="timeline-footer">
+                <div className="preset-row">
+                  <span>Rychlé období</span>
+                  <button onClick={() => clampRange(-3200, 500)}>Starověk</button>
+                  <button onClick={() => clampRange(500, 1500)}>Středověk</button>
+                  <button onClick={() => clampRange(1150, 1500)}>Gotika</button>
+                  <button onClick={() => clampRange(1400, 1600)}>Renesance</button>
+                  <button onClick={() => clampRange(1600, 1750)}>Baroko</button>
+                  <button onClick={() => clampRange(1775, 1850)}>Národní obrození</button>
+                  <button onClick={() => clampRange(1900, 2000)}>20. století</button>
+                  <button onClick={() => clampRange(HISTORY_MIN, HISTORY_MAX)}>Celá historie</button>
+                </div>
+                <div className="zoom-row">
+                  <button onClick={() => zoomAt(1.45)} title="Oddálit"><Minus /></button>
+                  <span className="edge-year">{formatYear(viewStart)}</span>
+                  <input type="range" min="0" max="100" value={Math.round(100 * Math.log((HISTORY_MAX - HISTORY_MIN) / span) / Math.log((HISTORY_MAX - HISTORY_MIN) / MIN_SPAN))} onChange={(event) => {
+                    const next = (HISTORY_MAX - HISTORY_MIN) * Math.pow(MIN_SPAN / (HISTORY_MAX - HISTORY_MIN), Number(event.target.value) / 100);
+                    const center = (viewStart + viewEnd) / 2;
+                    clampRange(center - next / 2, center + next / 2);
+                  }} />
+                  <span className="edge-year">{formatYear(viewEnd)}</span>
+                  <button onClick={() => zoomAt(0.7)} title="Přiblížit"><Plus /></button>
+                  <strong>{span < 30 ? `${span.toFixed(1)} roku` : `${Math.round(span).toLocaleString("cs-CZ")} let`}</strong>
+                </div>
+              </div>
+            </main>
           </div>
 
-          <div className="zoom-dock">
-            <button onClick={() => zoomAt(1.45)}><Minus /></button>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={Math.round(
-                100 * Math.log((HISTORY_MAX - HISTORY_MIN) / span) /
-                  Math.log((HISTORY_MAX - HISTORY_MIN) / MIN_SPAN),
-              )}
-              onChange={(event) => {
-                const next =
-                  (HISTORY_MAX - HISTORY_MIN) *
-                  Math.pow(MIN_SPAN / (HISTORY_MAX - HISTORY_MIN), Number(event.target.value) / 100);
-                const center = (viewStart + viewEnd) / 2;
-                clampRange(center - next / 2, center + next / 2);
-              }}
-            />
-            <button onClick={() => zoomAt(0.7)}><Plus /></button>
-            <span>{span < 30 ? `${span.toFixed(1)} roku` : `${Math.round(span).toLocaleString("cs-CZ")} let`}</span>
-          </div>
-
-          <div className="preset-dock">
-            <button onClick={() => clampRange(-3200, 500)}>Starověk</button>
-            <button onClick={() => clampRange(500, 1500)}>Středověk</button>
-            <button onClick={() => clampRange(1350, HISTORY_MAX)}>Literatura a novověk</button>
-            <button onClick={() => clampRange(1800, 1900)}>19. století</button>
-            <button onClick={() => clampRange(1900, 2000)}>20. století</button>
-            <button onClick={() => clampRange(HISTORY_MIN, HISTORY_MAX)}>Celá historie</button>
-          </div>
+          {timelineOnly && (
+            <div className="floating-controls">
+              <button onClick={() => setTimelineOnly(false)} title="Vrátit rozhraní"><X /></button>
+              <button onClick={() => setDark((value) => !value)} title="Změnit režim">{dark ? <Sun /> : <Moon />}</button>
+              <button onClick={toggleFullscreen} title="Celá obrazovka"><Maximize2 /></button>
+            </div>
+          )}
         </div>
-      </main>
+      </section>
 
-      {timelineOnly && (
-        <div className="floating-controls">
-          <button onClick={() => setTimelineOnly(false)} title="Vrátit rozhraní"><X /></button>
-          <button onClick={() => setDark((value) => !value)}>{dark ? <Sun /> : <Moon />}</button>
-          <button onClick={toggleFullscreen}><Maximize2 /></button>
-        </div>
+      {!timelineOnly && (
+        <footer className="landing-footer">
+          <div className="landing-brand"><span><Landmark /></span><strong>Časovrstvy</strong></div>
+          <p>Interaktivní vzdělávací pomůcka pro historii, literaturu a výuku v souvislostech.</p>
+          <button onClick={scrollToTimeline}>Zpět k časové ose</button>
+        </footer>
       )}
 
       {detail && (
@@ -986,14 +1165,8 @@ function App() {
             <h2>{detail.title}</h2>
             <p className="detail-date">{formatRange(detail.start, detail.end, detail.living)}</p>
             <p>{detail.summary}</p>
-            {detail.authorId && (
-              <p className="detail-related">
-                Autor: {allAuthors.find((authorItem) => authorItem.id === detail.authorId)?.title || "neuveden"}
-              </p>
-            )}
-            <a href={wikiUrl(detail.wikiTitle)} target="_blank" rel="noreferrer">
-              Otevřít na Wikipedii <ExternalLink />
-            </a>
+            {detail.authorId && <p className="detail-related">Autor: {allAuthors.find((authorItem) => authorItem.id === detail.authorId)?.title || "neuveden"}</p>}
+            <a href={wikiUrl(detail.wikiTitle)} target="_blank" rel="noreferrer">Otevřít na Wikipedii <ExternalLink /></a>
           </div>
         </aside>
       )}
@@ -1002,51 +1175,27 @@ function App() {
         <div className="dialog-backdrop" onMouseDown={() => setAuthorPickerOpen(false)}>
           <section className="dialog author-dialog" onMouseDown={(event) => event.stopPropagation()}>
             <header>
-              <div>
-                <span>VLASTNÍ STUDIJNÍ OSA</span>
-                <h2>Vyber si autory</h2>
-                <p>Na ose se zobrazí jejich život, díla a historický kontext.</p>
-              </div>
+              <div><span>VLASTNÍ STUDIJNÍ OSA</span><h2>Vyber si autory</h2><p>Na ose se zobrazí jejich život, díla a historický kontext.</p></div>
               <button className="icon-button" onClick={() => setAuthorPickerOpen(false)}><X /></button>
             </header>
-
             <label className="dialog-search"><Search /><input value={authorSearch} onChange={(event) => setAuthorSearch(event.target.value)} placeholder="Hledat v katalogu…" /></label>
-
             <div className="author-actions">
               <button onClick={() => setSelectedAuthors(new Set(DEFAULT_AUTHOR_IDS))}><RotateCcw /> Maturitní výběr</button>
               <button onClick={() => setSelectedAuthors(new Set(allAuthors.map((item) => item.id)))}><Check /> Vybrat všechny</button>
               <button onClick={() => setSelectedAuthors(new Set())}><X /> Vymazat</button>
             </div>
-
             <div className="author-grid">
-              {allAuthors
-                .filter((item) => normalize(item.title).includes(normalize(authorSearch)))
-                .map((item) => (
-                  <button
-                    key={item.id}
-                    className={selectedAuthors.has(item.id) ? "selected" : ""}
-                    onClick={() => toggleAuthor(item.id)}
-                  >
-                    <span className="picker-avatar"><WikiImage title={item.wikiTitle} alt={item.title} /></span>
-                    <span><strong>{item.title}</strong><small>{formatRange(item.start, item.end, item.living)}</small></span>
-                    <i>{selectedAuthors.has(item.id) && <Check />}</i>
-                  </button>
-                ))}
-            </div>
-
-            <div className="import-author">
-              <div>
-                <span>PŘIDAT AUTORA Z WIKIPEDIE</span>
-                <h3>Není v katalogu?</h3>
-                <p>Napiš například „Dostojevskij“. Prototyp načte životopisná data a datovaná významná díla z Wikidat.</p>
-              </div>
-              <div className="import-row">
-                <input value={importName} onChange={(event) => setImportName(event.target.value)} onKeyDown={(event) => event.key === "Enter" && importAuthor()} placeholder="Jméno autora…" />
-                <button onClick={importAuthor} disabled={importing}>
-                  {importing ? <LoaderCircle className="spin" /> : <Plus />}
-                  Přidat
+              {allAuthors.filter((item) => normalize(item.title).includes(normalize(authorSearch))).map((item) => (
+                <button key={item.id} className={selectedAuthors.has(item.id) ? "selected" : ""} onClick={() => toggleAuthor(item.id)}>
+                  <span className="picker-avatar"><WikiImage title={item.wikiTitle} alt={item.title} /></span>
+                  <span><strong>{item.title}</strong><small>{formatRange(item.start, item.end, item.living)}</small></span>
+                  <i>{selectedAuthors.has(item.id) && <Check />}</i>
                 </button>
-              </div>
+              ))}
+            </div>
+            <div className="import-author">
+              <div><span>PŘIDAT AUTORA Z WIKIPEDIE</span><h3>Není v katalogu?</h3><p>Napiš například „Dostojevskij“. Prototyp načte životopisná data a datovaná významná díla z Wikidat.</p></div>
+              <div className="import-row"><input value={importName} onChange={(event) => setImportName(event.target.value)} onKeyDown={(event) => event.key === "Enter" && importAuthor()} placeholder="Jméno autora…" /><button onClick={importAuthor} disabled={importing}>{importing ? <LoaderCircle className="spin" /> : <Plus />} Přidat</button></div>
               {importStatus && <p className="import-status">{importStatus}</p>}
             </div>
           </section>
