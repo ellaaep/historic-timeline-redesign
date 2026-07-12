@@ -1,5 +1,6 @@
 /* Import fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..600;1,8..60,300..600&display=swap");
 
 /* Tailwind v3 directives */
 @tailwind base;
@@ -33,79 +34,81 @@
     BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji";
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-serif: "Fraunces", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-reading: "Source Serif 4", ui-serif, Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
 
-  /* Shadcn colors */
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --primary: 240 5.9% 10%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 240 5.9% 10%;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
-  --sidebar: 223.8 0% 98%;
-  --sidebar-foreground: 223.8 0% 3.9%;
-  --sidebar-primary: 223.8 0% 9.1%;
-  --sidebar-primary-foreground: 223.8 0% 98%;
-  --sidebar-accent: 223.8 0% 96.1%;
-  --sidebar-accent-foreground: 223.8 0% 9.1%;
-  --sidebar-border: 223.8 0% 89.8%;
-  --sidebar-ring: 223.8 0% 63%;
+  /* Shadcn colors — Ink & Parchment (museum editorial) */
+  --background: 42 38% 95%;
+  --foreground: 30 28% 14%;
+  --card: 42 42% 97%;
+  --card-foreground: 30 28% 14%;
+  --popover: 42 42% 97%;
+  --popover-foreground: 30 28% 14%;
+  --primary: 8 55% 34%;
+  --primary-foreground: 42 42% 97%;
+  --secondary: 40 28% 88%;
+  --secondary-foreground: 30 28% 18%;
+  --muted: 40 25% 90%;
+  --muted-foreground: 32 14% 40%;
+  --accent: 38 48% 52%;
+  --accent-foreground: 30 30% 12%;
+  --destructive: 3 62% 42%;
+  --destructive-foreground: 42 42% 97%;
+  --border: 38 20% 82%;
+  --input: 38 20% 84%;
+  --ring: 8 55% 34%;
+  --chart-1: 8 55% 42%;
+  --chart-2: 152 20% 38%;
+  --chart-3: 210 32% 34%;
+  --chart-4: 38 55% 52%;
+  --chart-5: 266 22% 44%;
+  --sidebar: 40 32% 91%;
+  --sidebar-foreground: 30 28% 14%;
+  --sidebar-primary: 8 55% 34%;
+  --sidebar-primary-foreground: 42 42% 97%;
+  --sidebar-accent: 38 40% 82%;
+  --sidebar-accent-foreground: 30 30% 12%;
+  --sidebar-border: 38 20% 80%;
+  --sidebar-ring: 8 55% 34%;
 }
 
 .dark {
-  /* Shadcn colors */
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 240 5.9% 10%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 240 4.9% 83.9%;
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
-  --sidebar: 223.8 0% 9.1%;
-  --sidebar-foreground: 223.8 0% 98%;
-  --sidebar-primary: 225.3 84.1% 49%;
-  --sidebar-primary-foreground: 223.8 0% 98%;
-  --sidebar-accent: 223.8 0% 14.9%;
-  --sidebar-accent-foreground: 223.8 0% 98%;
-  --sidebar-border: 223.8 0% 15.5%;
-  --sidebar-ring: 223.8 0% 32.2%;
+  /* Shadcn colors — Ink & Parchment (dark: deep ink, brass glow) */
+  --background: 26 22% 8%;
+  --foreground: 42 28% 91%;
+  --card: 26 20% 11%;
+  --card-foreground: 42 28% 91%;
+  --popover: 26 20% 11%;
+  --popover-foreground: 42 28% 91%;
+  --primary: 10 62% 56%;
+  --primary-foreground: 26 22% 8%;
+  --secondary: 26 16% 16%;
+  --secondary-foreground: 42 28% 91%;
+  --muted: 26 16% 16%;
+  --muted-foreground: 38 14% 65%;
+  --accent: 38 52% 55%;
+  --accent-foreground: 26 22% 10%;
+  --destructive: 3 55% 46%;
+  --destructive-foreground: 42 28% 91%;
+  --border: 26 16% 20%;
+  --input: 26 16% 20%;
+  --ring: 10 62% 56%;
+  --chart-1: 10 62% 58%;
+  --chart-2: 152 24% 48%;
+  --chart-3: 205 40% 55%;
+  --chart-4: 38 60% 58%;
+  --chart-5: 266 30% 62%;
+  --sidebar: 26 20% 9%;
+  --sidebar-foreground: 42 28% 91%;
+  --sidebar-primary: 10 62% 56%;
+  --sidebar-primary-foreground: 26 22% 8%;
+  --sidebar-accent: 26 16% 18%;
+  --sidebar-accent-foreground: 42 28% 91%;
+  --sidebar-border: 26 16% 20%;
+  --sidebar-ring: 10 62% 56%;
 }
 
 body {
@@ -116,4 +119,13 @@ body {
 
   color: hsl(var(--foreground));
   background-color: hsl(var(--background));
+}
+
+.bg-noise-texture {
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      hsl(var(--foreground) / 0.035) 1px,
+      transparent 0
+    );
+  background-size: 3px 3px;
 }

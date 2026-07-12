@@ -55,6 +55,8 @@ export default {
         sans: "var(--font-sans)",
         serif: "var(--font-serif)",
         mono: "var(--font-mono)",
+        display: "var(--font-display)",
+        reading: "var(--font-reading)",
       },
       borderRadius: {
         sm: "calc(var(--radius) - 4px)",
