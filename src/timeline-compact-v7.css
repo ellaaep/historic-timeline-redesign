@@ -1,0 +1,343 @@
+/* Compact, readable timeline pass. Loaded last so it wins over experimental layers. */
+
+.timeline-app {
+  --compact-lane-height: 124px;
+}
+
+.timeline-workspace {
+  grid-template-rows: 72px 104px minmax(0, 1fr) auto !important;
+}
+
+/* Historical periods stay on top, but use three short readable rows. */
+.period-strip {
+  height: 104px !important;
+  min-height: 104px !important;
+  grid-template-columns: 118px minmax(0, 1fr) !important;
+}
+
+.period-strip-label {
+  width: 118px !important;
+  min-width: 118px !important;
+  min-height: 104px !important;
+  padding: 12px 10px !important;
+  font-size: 11px !important;
+  line-height: 1.08 !important;
+}
+
+.period-strip-label::after {
+  margin-top: 4px !important;
+  font-size: 6.5px !important;
+  line-height: 1.25 !important;
+}
+
+.period-track {
+  height: 104px !important;
+}
+
+.period-track button {
+  min-width: 78px !important;
+  max-width: 190px !important;
+  height: 26px !important;
+  padding: 3px 7px !important;
+  border-left-width: 3px !important;
+  border-radius: 7px !important;
+  background: rgba(255, 252, 246, .96) !important;
+  box-shadow: 0 2px 7px rgba(60, 39, 27, .09) !important;
+}
+
+.period-track strong {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 8.5px !important;
+  line-height: 1 !important;
+}
+
+.period-track small {
+  font-size: 6.5px !important;
+  line-height: 1 !important;
+}
+
+/* Use the compact floating row title treatment from the original main version. */
+.timeline-lane {
+  position: relative !important;
+  min-height: var(--compact-lane-height) !important;
+  display: block !important;
+  grid-template-columns: none !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--lane-strong) 18%, #d9c6ae) !important;
+  background: color-mix(in srgb, var(--lane-soft) 32%, #fffdf8) !important;
+  contain: layout paint;
+}
+
+.timeline-lane:has(.author-item) {
+  min-height: 140px !important;
+}
+
+.timeline-lane:has(.work-item) {
+  min-height: 145px !important;
+}
+
+.timeline-lane header {
+  position: absolute !important;
+  z-index: 30 !important;
+  top: 7px !important;
+  left: 8px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 3px 8px 3px 5px !important;
+  border: 1px solid color-mix(in srgb, var(--lane-strong) 24%, #dbcdbb) !important;
+  border-left: 3px solid var(--lane-strong) !important;
+  border-radius: 8px !important;
+  background: color-mix(in srgb, var(--lane-soft) 72%, #fffdf8) !important;
+  box-shadow: 0 3px 9px rgba(45, 27, 17, .08) !important;
+}
+
+.timeline-lane header > span {
+  width: 22px !important;
+  height: 22px !important;
+  flex: 0 0 22px !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+.timeline-lane header > span svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.timeline-lane header > div {
+  display: block !important;
+}
+
+.timeline-lane header strong {
+  max-width: none !important;
+  color: #30221c !important;
+  font-family: "DM Sans", Inter, system-ui, sans-serif !important;
+  font-size: 9.5px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+.timeline-lane header small {
+  display: none !important;
+}
+
+.lane-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit !important;
+  overflow: hidden !important;
+}
+
+/* All cards are significantly smaller; the image is the primary marker. */
+.timeline-item {
+  min-width: 92px !important;
+  max-width: 180px !important;
+  height: 48px !important;
+  gap: 6px !important;
+  padding: 4px 7px 4px 4px !important;
+  border: 1px solid color-mix(in srgb, var(--lane-strong) 24%, #d7c8b7) !important;
+  border-radius: 9px !important;
+  color: #2a1712 !important;
+  background: rgba(255, 253, 248, .94) !important;
+  box-shadow: 0 4px 10px rgba(43, 29, 20, .10) !important;
+  transform: none !important;
+}
+
+.timeline-item:hover,
+.timeline-item.focused,
+.timeline-item:focus-visible {
+  z-index: 40 !important;
+  transform: translateY(-2px) !important;
+  filter: none !important;
+  box-shadow: 0 8px 16px rgba(43, 29, 20, .16) !important;
+}
+
+.timeline-media,
+.item-icon {
+  width: 38px !important;
+  height: 38px !important;
+  flex: 0 0 38px !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border-radius: 8px !important;
+  color: var(--lane-strong) !important;
+  background: color-mix(in srgb, var(--lane-soft) 66%, white) !important;
+}
+
+.timeline-media img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.work-item .timeline-media img {
+  object-fit: contain !important;
+  background: #eee3d1 !important;
+}
+
+.item-copy {
+  min-width: 0 !important;
+  gap: 1px !important;
+}
+
+.item-copy strong {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  text-overflow: ellipsis !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  font-size: 8.5px !important;
+  font-weight: 800 !important;
+  line-height: 1.08 !important;
+}
+
+.item-copy small {
+  font-size: 6.8px !important;
+  line-height: 1 !important;
+}
+
+/* Authors retain the lifespan line, but portraits and labels are compact. */
+.author-item {
+  min-width: 108px !important;
+  max-width: none !important;
+  height: 48px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.author-item::before {
+  left: 20px !important;
+  right: 2px !important;
+  top: 21px !important;
+  height: 2px !important;
+}
+
+.author-item::after {
+  right: 0 !important;
+  top: 17px !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-width: 2px !important;
+}
+
+.timeline-cutout {
+  position: absolute !important;
+  z-index: 4 !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: auto !important;
+  width: 44px !important;
+  height: 44px !important;
+  border: 2px solid rgba(255, 250, 240, .98) !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: #f2e7da !important;
+  filter: drop-shadow(0 4px 5px rgba(38, 40, 48, .20)) !important;
+  box-shadow: none !important;
+}
+
+.timeline-cutout img {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+  transform: none !important;
+}
+
+.author-item .item-copy {
+  position: absolute !important;
+  z-index: 5 !important;
+  top: 39px !important;
+  left: 0 !important;
+  width: max-content !important;
+  max-width: 145px !important;
+  padding: 3px 6px !important;
+  border: 1px solid color-mix(in srgb, var(--lane-strong) 22%, #d7c8b7) !important;
+  border-radius: 6px !important;
+  background: rgba(255, 253, 248, .96) !important;
+  box-shadow: 0 3px 7px rgba(43, 29, 20, .10) !important;
+}
+
+.author-item .item-copy strong {
+  max-width: 132px !important;
+  -webkit-line-clamp: 1 !important;
+  white-space: nowrap !important;
+  font-size: 8px !important;
+}
+
+.author-item .item-copy small {
+  font-size: 6.5px !important;
+}
+
+/* Works are the smallest visual row. */
+.work-item {
+  min-width: 82px !important;
+  max-width: 112px !important;
+  height: 44px !important;
+  padding: 3px 5px 3px 3px !important;
+}
+
+.work-item .timeline-media,
+.work-item .item-icon {
+  width: 32px !important;
+  height: 38px !important;
+  flex-basis: 32px !important;
+  border-radius: 5px !important;
+}
+
+/* Compact controls and Czech switch states. */
+.lane-toggle-list i {
+  min-width: 48px !important;
+  padding: 4px 6px !important;
+  font-size: 7px !important;
+}
+
+.timeline-controls {
+  padding: 7px 10px 8px !important;
+}
+
+.range-readout {
+  margin-bottom: 3px !important;
+}
+
+.control-row {
+  gap: 6px !important;
+}
+
+.preset-row {
+  margin-top: 5px !important;
+}
+
+@media (max-width: 900px) {
+  .period-strip {
+    grid-template-columns: 96px minmax(0, 1fr) !important;
+  }
+
+  .period-strip-label {
+    width: 96px !important;
+    min-width: 96px !important;
+  }
+
+  .timeline-lane header {
+    max-width: 118px !important;
+  }
+}
