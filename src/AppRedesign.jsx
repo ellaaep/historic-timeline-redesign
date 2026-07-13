@@ -168,26 +168,53 @@ function useWikiImage(title, active = true) {
     const key = `casovrstvy-image:${title}`;
     const cached = sessionStorage.getItem(key);
     if (cached) {
-      setSource(cached);
+      if (cached !== "__missing__") setSource(cached);
       return;
     }
+
+    const summaryImage = async (language, pageTitle) => {
+      const response = await fetch(`https://${language}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(String(pageTitle).replace(/ /g, "_"))}`);
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.thumbnail?.source || data.originalimage?.source || null;
+    };
+
+    const searchImage = async (language) => {
+      const url = new URL(`https://${language}.wikipedia.org/w/api.php`);
+      Object.entries({
+        action: "query",
+        generator: "search",
+        gsrsearch: title,
+        gsrlimit: "1",
+        prop: "pageimages",
+        piprop: "thumbnail|original",
+        pithumbsize: "420",
+        format: "json",
+        formatversion: "2",
+        origin: "*",
+      }).forEach(([name, value]) => url.searchParams.set(name, value));
+      const data = await (await fetch(url)).json();
+      const page = data.query?.pages?.[0];
+      return page?.thumbnail?.source || page?.original?.source || null;
+    };
+
     (async () => {
       for (const language of ["cs", "en"]) {
         try {
-          const response = await fetch(`https://${language}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, "_"))}`);
-          if (!response.ok) continue;
-          const data = await response.json();
-          const image = data.thumbnail?.source || data.originalimage?.source;
+          const exact = await summaryImage(language, title);
+          const image = exact || await searchImage(language);
           if (image) {
             sessionStorage.setItem(key, image);
             if (!cancelled) setSource(image);
             return;
           }
         } catch {
-          // Fallback icon is used.
+          // Continue with the next Wikipedia language.
         }
       }
+      sessionStorage.setItem(key, "__missing__");
     })();
+
     return () => { cancelled = true; };
   }, [title, active]);
   return source;
@@ -209,6 +236,28 @@ function WikiPortrait({ title, className = "" }) {
     return () => observer.disconnect();
   }, []);
   return <span ref={ref} className={`wiki-portrait ${className}`}>{source ? <img src={source} alt="" loading="lazy" referrerPolicy="no-referrer" /> : <UserRound size={22} />}</span>;
+}
+
+function WikiMedia({ title, Icon = History, className = "" }) {
+  const ref = useRef(null);
+  const [active, setActive] = useState(false);
+  const source = useWikiImage(title, active);
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setActive(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: "280px" });
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <span ref={ref} className={`timeline-media ${className}`}>
+      {source ? <img src={source} alt="" loading="lazy" referrerPolicy="no-referrer" /> : <Icon size={18} />}
+    </span>
+  );
 }
 
 function HeroPreview() {
@@ -414,14 +463,40 @@ function DetailPanel({ item, onClose }) {
 
 function TimelineItemCard({ item, viewStart, viewEnd, focusedAuthorId, onFocus, onOpen }) {
   const span = viewEnd - viewStart;
-  const left = ((item.start - viewStart) / span) * 100;
-  const duration = Math.max(0, item.end - item.start);
-  const widthPercent = Math.max(0, (duration / span) * 100);
-  const slots = item.lane === "authors" || item.lane === "works" ? 3 : 2;
-  const top = 14 + (hash(item.id) % slots) * 72;
+  const visibleStart = Math.max(item.start, viewStart);
+  const visibleEnd = Math.min(item.end, viewEnd);
+  const left = Math.max(0, Math.min(99, ((visibleStart - viewStart) / span) * 100));
+  const visibleDuration = Math.max(0, visibleEnd - visibleStart);
+  const widthPercent = Math.max(0, (visibleDuration / span) * 100);
+  const isAuthor = item.kind === "author";
+  const isWork = item.kind === "work";
+  const slots = isAuthor ? 2 : isWork ? 3 : 2;
+  const slotGap = isAuthor ? 52 : isWork ? 32 : 44;
+  const top = 32 + (hash(item.id) % slots) * slotGap;
   const Icon = laneIcon(item);
   const focused = item.id === focusedAuthorId || item.authorId === focusedAuthorId;
-  return <button className={`timeline-item ${item.kind === "author" ? "author-item" : ""} ${item.kind === "work" ? "work-item" : ""} ${focused ? "focused" : ""}`} style={{ left: `${left}%`, top, width: duration > 1 ? `max(${item.kind === "author" ? 174 : 154}px, ${widthPercent}%)` : item.kind === "work" ? 166 : 178, "--lane-soft": LANE_TONES[item.lane].soft, "--lane-strong": LANE_TONES[item.lane].strong }} onClick={onOpen} onMouseEnter={() => onFocus(item.kind === "author" ? item.id : item.authorId || null)} onMouseLeave={() => onFocus(null)} title={`${item.title} · ${formatRange(item)}`}>{item.kind === "author" ? <WikiPortrait title={item.wikiTitle} className="timeline-cutout" /> : <span className="item-icon"><Icon size={21} /></span>}<span className="item-copy"><strong>{item.title}</strong><small>{formatRange(item)}</small></span></button>;
+  const minimumWidth = isAuthor ? 108 : isWork ? 82 : 96;
+  return (
+    <button
+      className={`timeline-item lane-${item.lane} ${isAuthor ? "author-item" : ""} ${isWork ? "work-item" : ""} ${focused ? "focused" : ""}`}
+      style={{
+        left: `${left}%`,
+        top,
+        width: visibleDuration > 1 ? `max(${minimumWidth}px, ${widthPercent}%)` : minimumWidth,
+        "--lane-soft": LANE_TONES[item.lane].soft,
+        "--lane-strong": LANE_TONES[item.lane].strong,
+      }}
+      onClick={onOpen}
+      onMouseEnter={() => onFocus(isAuthor ? item.id : item.authorId || null)}
+      onMouseLeave={() => onFocus(null)}
+      title={`${item.title} · ${formatRange(item)}`}
+    >
+      {isAuthor
+        ? <WikiPortrait title={item.wikiTitle || item.title} className="timeline-cutout" />
+        : <WikiMedia title={item.wikiTitle || item.title} Icon={Icon} />}
+      <span className="item-copy"><strong>{item.title}</strong><small>{formatRange(item)}</small></span>
+    </button>
+  );
 }
 
 function TimelineApp({ timelineOnly, onToggleTimelineOnly, dark, onToggleDark }) {
@@ -432,7 +507,7 @@ function TimelineApp({ timelineOnly, onToggleTimelineOnly, dark, onToggleDark })
   const [viewStart, setViewStart] = useState(1800);
   const [viewEnd, setViewEnd] = useState(2026);
   const [density, setDensity] = useState("balanced");
-  const [enabledLanes, setEnabledLanes] = useState(new Set(LANE_ORDER));
+  const [enabledLanes, setEnabledLanes] = useState(new Set(["authors", "rulers", "czech", "world"]));
   const [selectedAuthors, setSelectedAuthors] = useState(new Set(readJson(AUTHOR_STORAGE, ["shakespeare", "komensky", "austen", "dostoevsky", "kafka", "capek", "orwell", "tolkien", "coelho", "mornstajnova"])));
   const [customData, setCustomData] = useState(readJson(CUSTOM_STORAGE, { authors: [], works: [] }));
   const [exactWorks, setExactWorks] = useState(() => { const stored = readJson(EXACT_WORK_STORAGE, null); return stored ? new Set(stored) : null; });
@@ -572,7 +647,7 @@ function TimelineApp({ timelineOnly, onToggleTimelineOnly, dark, onToggleDark })
         <div className="sidebar-brand"><span><Landmark /></span><div><strong>Časovrstvy</strong><small>historie v souvislostech</small></div><button className="icon-button" onClick={() => setSidebarCollapsed((value) => !value)}>{sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}</button><button className="icon-button mobile-close" onClick={() => setMobileFilters(false)}><X /></button></div>
         <div className="sidebar-content">
           <section><div className="sidebar-heading"><span>Množství informací</span><small>Kolik detailů má osa ukázat</small></div><div className="density-list">{Object.entries(DENSITY_COPY).map(([key, copy]) => <button key={key} className={density === key ? "active" : ""} onClick={() => setDensity(key)}><i>{density === key && <Check size={14} />}</i><span><strong>{copy[0]}</strong><small>{copy[1]}</small></span></button>)}</div></section>
-          <section><div className="sidebar-heading"><span>Tematické vrstvy</span><small>Vypnutý řádek úplně zmizí</small></div><div className="lane-toggle-list">{LANE_ORDER.map((lane) => { const Icon = LANE_ICONS[lane]; const active = enabledLanes.has(lane); return <button key={lane} className={active ? "active" : ""} onClick={() => toggleLane(lane)}><span style={{ color: LANE_TONES[lane].strong, background: LANE_TONES[lane].soft }}><Icon size={17} /></span><strong>{LANE_META[lane].label}</strong><i>{active ? "ON" : "OFF"}</i></button>; })}</div><div className="quick-filter-row"><button onClick={() => setEnabledLanes(new Set(LANE_ORDER))}>Všechny</button><button onClick={historyOnly}>Jen historie</button><button onClick={literatureContext}>Literatura + kontext</button></div></section>
+          <section><div className="sidebar-heading"><span>Tematické vrstvy</span><small>Vypnutý řádek úplně zmizí</small></div><div className="lane-toggle-list">{LANE_ORDER.map((lane) => { const Icon = LANE_ICONS[lane]; const active = enabledLanes.has(lane); return <button key={lane} className={active ? "active" : ""} onClick={() => toggleLane(lane)}><span style={{ color: LANE_TONES[lane].strong, background: LANE_TONES[lane].soft }}><Icon size={17} /></span><strong>{LANE_META[lane].label}</strong><i>{active ? "Zapnuto" : "Vypnuto"}</i></button>; })}</div><div className="quick-filter-row"><button onClick={() => setEnabledLanes(new Set(LANE_ORDER))}>Všechny</button><button onClick={historyOnly}>Jen historie</button><button onClick={literatureContext}>Literatura + kontext</button></div></section>
           <section><div className="sidebar-heading"><span>Literatura</span><small>{selectedAuthors.size} vybraných autorů</small></div><button className="sidebar-action" onClick={() => setAuthorPicker(true)}><Users size={19} /><span><strong>Vybrat vlastní autory</strong><small>Katalog více než 100 autorů</small></span><ChevronRight size={16} /></button><button className="sidebar-action accent" onClick={() => setPersonalization(true)}><Upload size={19} /><span><strong>Nahrát vlastní seznam</strong><small>PDF, DOCX, TXT, CSV nebo JSON</small></span><ChevronRight size={16} /></button>{(customData.authors.length > 0 || exactWorks) && <button className="reset-personalization" onClick={resetPersonalization}>Zrušit personalizaci</button>}</section>
           <section><div className="sidebar-heading"><span>Vlastní období</span><small>Zadej přesný rozsah</small></div><form className="custom-range" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); setRange(form.get("from"), form.get("to")); }}><label>Od<input name="from" type="number" defaultValue={Math.round(viewStart)} /></label><label>Do<input name="to" type="number" defaultValue={Math.round(viewEnd)} /></label><button type="submit">Použít</button></form></section>
         </div>
@@ -582,8 +657,8 @@ function TimelineApp({ timelineOnly, onToggleTimelineOnly, dark, onToggleDark })
       <div className="timeline-workspace">
         <div className="timeline-toolbar"><button className="mobile-filter-button" onClick={() => setMobileFilters(true)}><Filter size={18} /> Filtry</button><label className="app-search"><Search size={18} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Hledat autora, dílo nebo událost…" /></label>{searchResults.length > 0 && <div className="search-results">{searchResults.map((item) => { const Icon = laneIcon(item); return <button key={item.id} onClick={() => focusItem(item)}><span style={{ background: LANE_TONES[item.lane].soft, color: LANE_TONES[item.lane].strong }}><Icon size={16} /></span><div><strong>{item.title}</strong><small>{LANE_META[item.lane].label} · {formatRange(item)}</small></div></button>; })}</div>}<button className="toolbar-button" onClick={() => setPeriodMenu((value) => !value)}><CalendarDays size={17} /> Období <ChevronDown size={15} /></button><button className="icon-button" onClick={onToggleDark}>{dark ? <Sun /> : <Moon />}</button><button className="toolbar-button" onClick={onToggleTimelineOnly}><Layers3 size={17} /> {timelineOnly ? "Celá stránka" : "Pouze osa"}</button><button className="icon-button" onClick={fullscreen}><Maximize2 /></button></div>
         {periodMenu && <div className="period-menu">{PRESETS.map(([label, start, end]) => <button key={label} onClick={() => { setRange(start, end); setPeriodMenu(false); }}>{label}<small>{formatYear(start)}–{formatYear(end)}</small></button>)}</div>}
-        <div className="period-strip"><div className="period-strip-label">Historická období</div><div className="period-track">{visiblePeriods.map((period) => <button key={period.id} style={{ left: `${(period.start - viewStart) / span * 100}%`, width: `max(72px, ${(period.end - period.start) / span * 100}%)`, background: `${period.color}22`, borderColor: `${period.color}66`, color: period.color }} onClick={() => setRange(period.start, period.end)}><strong>{period.title}</strong><small>{formatYear(period.start)}–{formatYear(period.end)}</small></button>)}</div></div>
-        <div className="timeline-scroll"><div className="timeline-grid" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag} onWheel={onWheel}><div className="time-axis">{ticks.map((tick) => <span key={tick} style={{ left: `${(tick - viewStart) / span * 100}%` }}><b>{formatYear(tick)}</b></span>)}</div>{LANE_ORDER.filter((lane) => enabledLanes.has(lane)).map((lane) => { const Icon = LANE_ICONS[lane]; const items = byLane.get(lane); return <section key={lane} className="timeline-lane" style={{ "--lane-soft": LANE_TONES[lane].soft, "--lane-strong": LANE_TONES[lane].strong }}><header><span><Icon size={18} /></span><div><strong>{LANE_META[lane].label}</strong><small>{items.length} viditelných</small></div></header><div className="lane-canvas">{ticks.map((tick) => <i key={tick} className="grid-line" style={{ left: `${(tick - viewStart) / span * 100}%` }} />)}{items.map((item) => <TimelineItemCard key={item.id} item={item} viewStart={viewStart} viewEnd={viewEnd} focusedAuthorId={focusedAuthorId} onFocus={setFocusedAuthorId} onOpen={() => setDetail(item)} />)}</div></section>; })}</div></div>
+        <div className="period-strip"><div className="period-strip-label">Historická období</div><div className="period-track">{visiblePeriods.map((period) => <button key={period.id} style={{ left: `${(period.start - viewStart) / span * 100}%`, top: `${8 + (hash(period.id) % 3) * 30}px`, width: `max(72px, ${(period.end - period.start) / span * 100}%)`, background: `${period.color}22`, borderColor: `${period.color}66`, color: period.color }} onClick={() => setRange(period.start, period.end)} title={`${period.title} · ${formatYear(period.start)}–${formatYear(period.end)}`}><strong>{period.title}</strong><small>{formatYear(period.start)}–{formatYear(period.end)}</small></button>)}</div></div>
+        <div className="timeline-scroll"><div className="timeline-grid" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag} onWheel={onWheel}><div className="time-axis">{ticks.map((tick) => <span key={tick} style={{ left: `${(tick - viewStart) / span * 100}%` }}><b>{formatYear(tick)}</b></span>)}</div>{LANE_ORDER.filter((lane) => enabledLanes.has(lane)).map((lane) => { const Icon = LANE_ICONS[lane]; const items = byLane.get(lane); return <section key={lane} className="timeline-lane" data-lane={lane} style={{ "--lane-soft": LANE_TONES[lane].soft, "--lane-strong": LANE_TONES[lane].strong }}><header><span><Icon size={18} /></span><div><strong>{LANE_META[lane].label}</strong><small>{items.length} viditelných</small></div></header><div className="lane-canvas">{ticks.map((tick) => <i key={tick} className="grid-line" style={{ left: `${(tick - viewStart) / span * 100}%` }} />)}{items.map((item) => <TimelineItemCard key={item.id} item={item} viewStart={viewStart} viewEnd={viewEnd} focusedAuthorId={focusedAuthorId} onFocus={setFocusedAuthorId} onOpen={() => setDetail(item)} />)}</div></section>; })}</div></div>
         <div className="timeline-controls"><div className="range-readout"><span>{formatYear(viewStart)}</span><strong>{formatYear(center)}</strong><span>{formatYear(viewEnd)}</span></div><div className="control-row"><button className="icon-button" onClick={() => { const nextSpan = zoomToSpan(Math.min(100, zoom + 8)); setRange(center - nextSpan / 2, center + nextSpan / 2); }}><Plus /></button><input className="zoom-slider" type="range" min="0" max="100" value={zoom} onChange={(event) => { const nextSpan = zoomToSpan(Number(event.target.value)); setRange(center - nextSpan / 2, center + nextSpan / 2); }} /><button className="icon-button" onClick={() => { const nextSpan = zoomToSpan(Math.max(0, zoom - 8)); setRange(center - nextSpan / 2, center + nextSpan / 2); }}><Minus /></button><div className="pan-control"><MoveHorizontal size={16} /><input type="range" min={MIN_YEAR} max={MAX_YEAR} value={Math.round(center)} onChange={(event) => { const nextCenter = Number(event.target.value); setRange(nextCenter - span / 2, nextCenter + span / 2); }} /></div><button className="overview-button" onClick={() => setRange(1000, 2026)}><RotateCcw size={16} /> Oddálit na přehled</button></div><div className="preset-row">{PRESETS.map(([label, start, end]) => <button key={label} onClick={() => setRange(start, end)}>{label}</button>)}</div></div>
       </div>
 
