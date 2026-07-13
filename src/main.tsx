@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 
 import "./world-author-catalog.ts";
 import "./curriculum-catalog.ts";
-import AppRedesign from "./AppRedesign.tsx";
+// @ts-ignore The isolated redesign prototype intentionally uses a JSX runtime module.
+import AppRedesign from "./AppRedesign.jsx";
 import "./redesign.css";
 
 interface ErrorBoundaryState {
