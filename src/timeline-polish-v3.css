@@ -1,0 +1,388 @@
+/* Final readability pass for periods, media, person visibility and selection UI. */
+
+.timeline-workspace {
+  grid-template-rows: 72px 202px minmax(0, 1fr) auto !important;
+}
+
+.period-strip {
+  min-height: 202px !important;
+  height: 202px !important;
+  grid-template-columns: 154px minmax(0, 1fr) !important;
+  overflow: hidden;
+  background: #fffaf0 !important;
+}
+
+.period-strip-label {
+  min-height: 202px;
+  padding: 22px 18px !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  color: #3a251d !important;
+  background: linear-gradient(180deg, #fffaf0, #f5ead7) !important;
+}
+
+.period-strip-label::after {
+  max-width: 115px;
+  line-height: 1.35;
+}
+
+.period-track {
+  position: relative;
+  height: 202px !important;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(90deg, transparent 0, transparent calc(16.666% - 1px), rgba(94, 68, 50, .11) calc(16.666% - 1px), rgba(94, 68, 50, .11) 16.666%),
+    linear-gradient(180deg, #fffdf8, #f7eddf);
+}
+
+.period-track button {
+  min-width: 118px !important;
+  max-width: 300px;
+  height: 40px !important;
+  padding: 6px 11px !important;
+  overflow: hidden;
+  justify-content: center !important;
+  gap: 1px !important;
+  border-width: 1px 1px 1px 4px !important;
+  border-radius: 10px !important;
+  color: #36251f !important;
+  background: rgba(255, 250, 240, .97) !important;
+  box-shadow: 0 5px 13px rgba(63, 42, 30, .10) !important;
+  backdrop-filter: blur(8px);
+}
+
+.period-track button:hover,
+.period-track button:focus-visible {
+  z-index: 30 !important;
+  transform: translateY(-1px);
+  background: #fffdf8 !important;
+  box-shadow: 0 9px 22px rgba(63, 42, 30, .18) !important;
+}
+
+.period-track strong {
+  width: 100%;
+  overflow: hidden;
+  color: #36251f !important;
+  font-size: 11.5px !important;
+  font-weight: 850 !important;
+  line-height: 1.05;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.period-track small {
+  width: 100%;
+  color: #7a6559 !important;
+  font-size: 8.5px !important;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* Keep portraits visible when a long lifespan starts before the selected viewport. */
+.author-item .timeline-cutout,
+.person-item .person-portrait {
+  left: var(--visible-anchor-offset, 0px) !important;
+  transition: left .12s ease;
+}
+
+.author-item .item-copy,
+.person-item .item-copy {
+  left: calc(var(--visible-anchor-offset, 0px) + 7px) !important;
+  transition: left .12s ease;
+}
+
+/* Wikipedia thumbnails for every visual timeline item. */
+.timeline-item .item-icon.wiki-media,
+.timeline-item .item-media.wiki-media {
+  overflow: hidden !important;
+  padding: 0 !important;
+  border: 2px solid rgba(255, 250, 240, .94) !important;
+  background: color-mix(in srgb, var(--lane-soft) 64%, #efe6d8) !important;
+  box-shadow: 0 6px 14px rgba(48, 31, 22, .17) !important;
+}
+
+.timeline-item .item-icon.wiki-media img,
+.timeline-item .item-media.wiki-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.work-item .item-icon.wiki-media img {
+  object-fit: contain;
+  background: #eee2ce;
+}
+
+.timeline-lane header {
+  min-width: 154px;
+  padding: 20px 16px !important;
+  align-items: flex-start !important;
+}
+
+.timeline-lane header > div {
+  min-width: 0;
+}
+
+.timeline-lane header strong {
+  display: block;
+  max-width: 105px;
+  margin-top: 1px;
+  line-height: 1.12 !important;
+  overflow-wrap: anywhere;
+}
+
+.timeline-lane header small {
+  display: block;
+  margin-top: 5px;
+}
+
+.timeline-lane {
+  grid-template-columns: 154px minmax(0, 1fr) !important;
+}
+
+/* Literature selection modal injected by timeline-polish-v3.ts. */
+.literature-picker-backdrop {
+  position: fixed;
+  z-index: 200000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(28, 5, 9, .68);
+  backdrop-filter: blur(10px);
+}
+
+.literature-picker {
+  width: min(1120px, 100%);
+  max-height: min(860px, calc(100vh - 44px));
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  border: 1px solid #d9c5a7;
+  border-radius: 20px;
+  color: #302019;
+  background: #fffaf0;
+  box-shadow: 0 35px 100px rgba(25, 4, 8, .38);
+}
+
+.literature-picker-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid #e0d0b8;
+  background: linear-gradient(135deg, #fffaf0, #f4e6cf);
+}
+
+.literature-picker-head h2 {
+  margin: 2px 0 5px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 25px;
+}
+
+.literature-picker-head p {
+  margin: 0;
+  color: #776155;
+  font-size: 12px;
+}
+
+.literature-picker-close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #d2bea0;
+  border-radius: 10px;
+  color: #4b0713;
+  background: #fffaf0;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.literature-picker-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto auto;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e4d5bf;
+}
+
+.literature-picker-search {
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid #d8c6ab;
+  border-radius: 10px;
+  color: #302019;
+  background: #fffdf8;
+  font: inherit;
+}
+
+.literature-picker-toolbar button,
+.literature-picker-foot button {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid #b88c70;
+  border-radius: 10px;
+  color: #4b0713;
+  background: #fff4dc;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.literature-picker-toolbar button.primary,
+.literature-picker-foot button.primary {
+  color: #fff8e8;
+  border-color: #690d20;
+  background: #690d20;
+}
+
+.literature-picker-body {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(300px, .9fr) minmax(420px, 1.35fr);
+}
+
+.literature-picker-column {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.literature-picker-column + .literature-picker-column {
+  border-left: 1px solid #e1d0b6;
+}
+
+.literature-picker-column > header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid #eadcc8;
+}
+
+.literature-picker-column > header strong {
+  display: block;
+  font-size: 15px;
+}
+
+.literature-picker-column > header small {
+  color: #806c5f;
+  font-size: 10px;
+}
+
+.literature-picker-list {
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+  scrollbar-color: #b99c7d #f4eadc;
+}
+
+.literature-choice {
+  width: 100%;
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 7px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: #34231d;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.literature-choice:hover {
+  background: #f7ead8;
+}
+
+.literature-choice.selected {
+  border-color: #b46c77;
+  background: #f8e8e8;
+}
+
+.literature-choice img,
+.literature-choice .choice-fallback {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  color: #690d20;
+  background: #eadbc6;
+  object-fit: cover;
+}
+
+.literature-choice.work-choice img,
+.literature-choice.work-choice .choice-fallback {
+  border-radius: 7px;
+  object-fit: contain;
+}
+
+.literature-choice strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.literature-choice small {
+  display: block;
+  margin-top: 3px;
+  color: #7e695c;
+  font-size: 9.5px;
+}
+
+.literature-choice .choice-check {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #c8ad8b;
+  border-radius: 50%;
+  color: transparent;
+  background: #fffaf0;
+}
+
+.literature-choice.selected .choice-check {
+  color: #fff;
+  border-color: #690d20;
+  background: #690d20;
+}
+
+.literature-work-options {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  border-bottom: 1px solid #eadcc8;
+  color: #5f493e;
+  font-size: 11px;
+}
+
+.literature-picker-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid #ddcbb2;
+  background: #f7ebd9;
+}
+
+.literature-picker-summary {
+  color: #665146;
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .timeline-workspace { grid-template-rows: 72px 170px minmax(0, 1fr) auto !important; }
+  .period-strip, .period-strip-label, .period-track { height: 170px !important; min-height: 170px !important; }
+  .literature-picker-body { grid-template-columns: 1fr; overflow: auto; }
+  .literature-picker-column { min-height: 360px; }
+  .literature-picker-column + .literature-picker-column { border-left: 0; border-top: 1px solid #e1d0b6; }
+  .literature-picker-toolbar { grid-template-columns: 1fr; }
+}
