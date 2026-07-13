@@ -3,22 +3,8 @@ import { createRoot } from "react-dom/client";
 
 import "./world-author-catalog.ts";
 import "./curriculum-catalog.ts";
-import App from "./App.tsx";
-import "./index.css";
-import "./landing.css";
-import "./school.css";
-import "./school-ui-v2.css";
-import "./compressed-history.css";
-import "./adaptive-timeline.css";
-import "./curriculum.css";
-import "./personalization.css";
-import { installSchoolEnhancements } from "./school-enhancements.ts";
-import { installSchoolLayout } from "./school-layout.ts";
-import { installSchoolUiV2 } from "./school-ui-v2.ts";
-import { installCompressedHistory } from "./compressed-history.ts";
-import { installAdaptiveTimeline } from "./adaptive-timeline.ts";
-import { installCurriculumUi } from "./curriculum-ui.ts";
-import { installPersonalization } from "./personalization.ts";
+import AppRedesign from "./AppRedesign.tsx";
+import "./redesign.css";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -45,25 +31,24 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
           display: "grid",
           placeItems: "center",
           padding: 24,
-          background: "#f6f0e5",
-          color: "#35251f",
+          background: "#f7f1e6",
+          color: "#241b17",
           fontFamily: "Inter, system-ui, sans-serif",
         }}
       >
         <section
           style={{
-            width: "min(620px, 100%)",
-            padding: 28,
-            border: "1px solid #d8c8b4",
-            borderRadius: 16,
-            background: "#fffaf1",
-            boxShadow: "0 20px 60px rgba(69, 43, 29, 0.14)",
+            width: "min(640px, 100%)",
+            padding: 30,
+            border: "1px solid #dfd4c5",
+            borderRadius: 18,
+            background: "#fffdf8",
+            boxShadow: "0 24px 70px rgba(65, 43, 29, 0.16)",
           }}
         >
-          <h1 style={{ margin: "0 0 10px", fontSize: 24 }}>Časovrstvy se nepodařilo spustit</h1>
+          <h1 style={{ margin: "0 0 10px", fontSize: 26 }}>Časovrstvy se nepodařilo spustit</h1>
           <p style={{ margin: "0 0 14px", lineHeight: 1.6 }}>
-            Aplikace narazila na chybu při načítání. Obnov stránku; pokud se zpráva zobrazí znovu,
-            zkopíruj text níže.
+            Nová verze narazila na chybu při načítání. Obnov stránku a případně zkopíruj text níže.
           </p>
           <code
             style={{
@@ -92,15 +77,7 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <ErrorBoundary>
-      <App />
+      <AppRedesign />
     </ErrorBoundary>
   </StrictMode>,
 );
-
-installSchoolEnhancements();
-installSchoolLayout();
-installSchoolUiV2();
-installCompressedHistory();
-installAdaptiveTimeline();
-installCurriculumUi();
-installPersonalization();
