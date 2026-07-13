@@ -1,0 +1,266 @@
+/* Separate content scaling from the horizontal time zoom. */
+.timeline-app {
+  --row-scale: 1;
+}
+
+.timeline-scale-control {
+  display: grid;
+  grid-template-columns: auto 36px minmax(150px, 1fr) 36px auto auto;
+  align-items: center;
+  gap: 9px;
+  margin-top: 10px;
+  padding: 10px 11px;
+  border: 1px solid #ddcdb8;
+  border-radius: 11px;
+  background: #fff8eb;
+}
+
+.timeline-scale-control > strong {
+  color: #4b0713;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.timeline-scale-control button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 11px;
+  border: 1px solid #c9ad8c;
+  border-radius: 9px;
+  color: #4b0713;
+  background: #fff0cf;
+  font-size: 9.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.timeline-scale-control button:hover {
+  background: #f5dfb8;
+}
+
+.timeline-scale-control input[type="range"] {
+  width: 100%;
+  min-width: 150px;
+  accent-color: #7d1730;
+}
+
+.timeline-scale-control output {
+  min-width: 42px;
+  color: #715d50;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-align: right;
+}
+
+/* Row labels are a consistent, calm column and stay aligned. */
+.timeline-lane,
+.period-strip {
+  grid-template-columns: 168px minmax(0, 1fr) !important;
+}
+
+.timeline-lane header,
+.period-strip-label {
+  width: 168px;
+  min-width: 168px;
+  box-sizing: border-box;
+  border-right: 1px solid #d7c6ae !important;
+}
+
+.timeline-lane header {
+  min-height: 100%;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px;
+  padding: 14px 13px !important;
+  background: color-mix(in srgb, var(--lane-soft) 46%, #fff8eb) !important;
+}
+
+.timeline-lane header > span {
+  width: calc(38px * var(--row-scale)) !important;
+  height: calc(38px * var(--row-scale)) !important;
+  flex: 0 0 calc(38px * var(--row-scale)) !important;
+}
+
+.timeline-lane header strong {
+  max-width: 96px !important;
+  font-size: clamp(10px, calc(14px * var(--row-scale)), 17px) !important;
+  line-height: 1.08 !important;
+}
+
+.timeline-lane header small {
+  font-size: clamp(7px, calc(9px * var(--row-scale)), 11px) !important;
+}
+
+.timeline-lane {
+  min-height: calc(188px * var(--row-scale)) !important;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--lane-soft) 46%, #fff8eb) 0 168px,
+    color-mix(in srgb, var(--lane-soft) 25%, #fffdf8) 168px 100%) !important;
+}
+
+.timeline-lane:has(.author-item),
+.timeline-lane:has(.person-item) {
+  min-height: calc(270px * var(--row-scale)) !important;
+}
+
+.timeline-lane:has(.work-item) {
+  min-height: calc(292px * var(--row-scale)) !important;
+}
+
+.timeline-item {
+  font-size: calc(1em * var(--row-scale));
+}
+
+.author-item,
+.person-item {
+  height: calc(82px * var(--row-scale)) !important;
+}
+
+.timeline-cutout,
+.person-item .person-portrait {
+  width: calc(72px * var(--row-scale)) !important;
+  height: calc(72px * var(--row-scale)) !important;
+}
+
+.author-item::before,
+.person-item::before {
+  top: calc(36px * var(--row-scale)) !important;
+  left: calc(32px * var(--row-scale)) !important;
+}
+
+.author-item::after,
+.person-item::after {
+  top: calc(31px * var(--row-scale)) !important;
+}
+
+.author-item .item-copy,
+.person-item .item-copy {
+  top: calc(68px * var(--row-scale)) !important;
+  max-width: calc(220px * var(--row-scale)) !important;
+  padding: calc(6px * var(--row-scale)) calc(9px * var(--row-scale)) !important;
+}
+
+.author-item .item-copy strong,
+.person-item .item-copy strong {
+  max-width: calc(200px * var(--row-scale)) !important;
+  font-size: clamp(8px, calc(12px * var(--row-scale)), 15px) !important;
+}
+
+.author-item .item-copy small,
+.person-item .item-copy small {
+  font-size: clamp(7px, calc(9.5px * var(--row-scale)), 11px) !important;
+}
+
+.work-item {
+  width: calc(150px * var(--row-scale)) !important;
+  min-width: calc(150px * var(--row-scale)) !important;
+  height: calc(124px * var(--row-scale)) !important;
+}
+
+.work-item .item-icon {
+  width: calc(60px * var(--row-scale)) !important;
+  height: calc(76px * var(--row-scale)) !important;
+  flex-basis: calc(76px * var(--row-scale)) !important;
+}
+
+.work-item .item-copy {
+  width: calc(148px * var(--row-scale)) !important;
+}
+
+.work-item .item-copy strong {
+  max-width: calc(136px * var(--row-scale)) !important;
+  font-size: clamp(8px, calc(11px * var(--row-scale)), 13px) !important;
+}
+
+.timeline-item:not(.author-item):not(.work-item):not(.person-item) {
+  min-width: calc(190px * var(--row-scale)) !important;
+  width: calc(190px * var(--row-scale)) !important;
+  min-height: calc(82px * var(--row-scale)) !important;
+  padding: calc(10px * var(--row-scale)) calc(12px * var(--row-scale)) !important;
+  gap: calc(10px * var(--row-scale)) !important;
+}
+
+.timeline-item:not(.author-item):not(.work-item):not(.person-item) .item-icon {
+  width: calc(48px * var(--row-scale)) !important;
+  height: calc(48px * var(--row-scale)) !important;
+  flex-basis: calc(48px * var(--row-scale)) !important;
+}
+
+.timeline-item:not(.author-item):not(.work-item):not(.person-item) .item-copy strong {
+  font-size: clamp(8px, calc(11px * var(--row-scale)), 14px) !important;
+}
+
+.timeline-item:not(.author-item):not(.work-item):not(.person-item) .item-copy small {
+  font-size: clamp(7px, calc(9px * var(--row-scale)), 11px) !important;
+}
+
+/* A compact overview mode tries to show all active rows at once. */
+.timeline-app[data-fit-rows="true"] .timeline-lane {
+  min-height: 82px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .timeline-lane:has(.author-item),
+.timeline-app[data-fit-rows="true"] .timeline-lane:has(.person-item),
+.timeline-app[data-fit-rows="true"] .timeline-lane:has(.work-item) {
+  min-height: 116px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .timeline-item {
+  --fit-item-scale: .68;
+}
+
+.timeline-app[data-fit-rows="true"] .timeline-cutout,
+.timeline-app[data-fit-rows="true"] .person-item .person-portrait {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .author-item .item-copy,
+.timeline-app[data-fit-rows="true"] .person-item .item-copy {
+  top: 45px !important;
+  max-width: 150px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .author-item .item-copy strong,
+.timeline-app[data-fit-rows="true"] .person-item .item-copy strong {
+  max-width: 138px !important;
+  font-size: 9px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .work-item {
+  width: 106px !important;
+  min-width: 106px !important;
+  height: 86px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .work-item .item-icon {
+  width: 42px !important;
+  height: 52px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .timeline-item:not(.author-item):not(.work-item):not(.person-item) {
+  width: 132px !important;
+  min-width: 132px !important;
+  min-height: 54px !important;
+  padding: 6px 8px !important;
+}
+
+.timeline-app[data-fit-rows="true"] .timeline-item:not(.author-item):not(.work-item):not(.person-item) .item-icon {
+  width: 34px !important;
+  height: 34px !important;
+  flex-basis: 34px !important;
+}
+
+@media (max-width: 980px) {
+  .timeline-scale-control {
+    grid-template-columns: auto 36px minmax(90px, 1fr) 36px;
+  }
+  .timeline-scale-control .fit-rows-button,
+  .timeline-scale-control output {
+    grid-column: span 2;
+  }
+}
