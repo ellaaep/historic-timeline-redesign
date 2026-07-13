@@ -57,9 +57,12 @@ function applyRange(frame: HTMLElement, start: number, end: number) {
 
 function getFilterRows(frame: HTMLElement) {
   const rows = [...frame.querySelectorAll<HTMLButtonElement>(".filter-row")];
-  return new Map<LaneName, HTMLButtonElement>(
-    LANES.map((lane, index) => [lane, rows[index]]),
-  );
+  const result = new Map<LaneName, HTMLButtonElement>();
+  LANES.forEach((lane, index) => {
+    const row = rows[index];
+    if (row) result.set(lane, row);
+  });
+  return result;
 }
 
 function recalculateRelations(canvas: HTMLElement) {
