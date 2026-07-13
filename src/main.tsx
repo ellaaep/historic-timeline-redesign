@@ -12,6 +12,7 @@ import "./timeline-polish-v3.css";
 import "./timeline-scale-v4.css";
 import "./timeline-localize-v5.css";
 import "./timeline-cleanup-v6.css";
+import "./timeline-compact-v7.css";
 
 interface ErrorBoundaryState {
   error: Error | null;
