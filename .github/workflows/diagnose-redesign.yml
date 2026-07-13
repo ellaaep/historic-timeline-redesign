@@ -1,0 +1,38 @@
+name: Diagnose redesign build
+
+on:
+  push:
+    branches:
+      - ux-redesign-v2
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ux-redesign-v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Capture build output
+        run: |
+          set +e
+          npm run build > redesign-build.log 2>&1
+          echo "exit_code=$?" >> redesign-build.log
+          set -e
+      - name: Commit diagnostic log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add redesign-build.log
+          if ! git diff --cached --quiet; then
+            git commit -m "Record redesign build diagnostics"
+            git push
+          fi
