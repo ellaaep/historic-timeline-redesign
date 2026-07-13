@@ -1,0 +1,181 @@
+/* Keep every marker fully inside its lane without increasing the lane height. */
+
+.timeline-app {
+  height: min(790px, 90vh);
+  min-height: 660px;
+}
+
+.timeline-lane {
+  height: 112px !important;
+  min-height: 112px !important;
+  overflow: hidden !important;
+}
+
+/* Two compact marker levels that both fit into a 112px lane. */
+.timeline-item:not(.author-item) {
+  width: 66px !important;
+  min-width: 66px !important;
+  max-width: 66px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  gap: 1px !important;
+}
+
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(odd) {
+  top: 31px !important;
+}
+
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(even) {
+  top: 63px !important;
+}
+
+.timeline-item:not(.author-item) .timeline-media,
+.timeline-item:not(.author-item) .item-icon {
+  width: 34px !important;
+  height: 30px !important;
+  min-width: 34px !important;
+  flex: 0 0 30px !important;
+  border-radius: 6px !important;
+}
+
+.timeline-item:not(.author-item) .timeline-media svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.timeline-item:not(.author-item) .item-copy {
+  width: 66px !important;
+  max-width: 66px !important;
+  gap: 0 !important;
+}
+
+.timeline-item:not(.author-item) .item-copy strong {
+  max-width: 66px !important;
+  font-size: 6.4px !important;
+  line-height: 1 !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+.timeline-item:not(.author-item) .item-copy small {
+  font-size: 5.2px !important;
+  line-height: 1 !important;
+}
+
+/* Portrait lanes use the same footprint as the other marker rows. */
+.timeline-item.lane-rulers,
+.timeline-item.lane-figures {
+  width: 72px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+}
+
+.timeline-item.lane-rulers .timeline-media,
+.timeline-item.lane-figures .timeline-media {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  flex-basis: 32px !important;
+}
+
+.timeline-item.lane-rulers .item-copy,
+.timeline-item.lane-figures .item-copy {
+  width: 72px !important;
+  max-width: 72px !important;
+}
+
+/* Book covers remain vertical but no longer protrude below their lane. */
+.work-item {
+  width: 56px !important;
+  min-width: 56px !important;
+  max-width: 56px !important;
+  height: 49px !important;
+}
+
+.work-item .timeline-media,
+.work-item .item-icon {
+  width: 23px !important;
+  height: 30px !important;
+  min-width: 23px !important;
+  flex-basis: 30px !important;
+}
+
+.work-item .item-copy {
+  width: 56px !important;
+  max-width: 56px !important;
+}
+
+/* Building thumbnails also stay inside their lane. */
+.timeline-item.lane-monuments {
+  width: 76px !important;
+  min-width: 76px !important;
+  max-width: 76px !important;
+}
+
+.timeline-item.lane-monuments .timeline-media {
+  width: 48px !important;
+  height: 29px !important;
+  min-width: 48px !important;
+  flex-basis: 29px !important;
+}
+
+.timeline-item.lane-monuments .item-copy {
+  width: 76px !important;
+  max-width: 76px !important;
+}
+
+/* Author portrait, lifespan line and label use two fitted levels. */
+.author-item {
+  height: 47px !important;
+  min-height: 47px !important;
+}
+
+.lane-canvas > button.author-item:nth-of-type(odd) {
+  top: 30px !important;
+}
+
+.lane-canvas > button.author-item:nth-of-type(even) {
+  top: 63px !important;
+}
+
+.author-item::before {
+  left: 15px !important;
+  top: 15px !important;
+}
+
+.author-item::after {
+  top: 11px !important;
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.timeline-cutout {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.author-item .item-copy {
+  top: 29px !important;
+  max-width: 100px !important;
+  padding: 1px 4px !important;
+}
+
+.author-item .item-copy strong {
+  max-width: 92px !important;
+  font-size: 6.4px !important;
+}
+
+.author-item .item-copy small {
+  font-size: 5.1px !important;
+}
+
+/* The row title must not cover the first data marker. */
+.timeline-lane header {
+  max-width: 130px !important;
+}
+
+@media (max-width: 900px) {
+  .timeline-app {
+    height: 82vh;
+    min-height: 620px;
+  }
+}
