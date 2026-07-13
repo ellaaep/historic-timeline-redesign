@@ -7,6 +7,7 @@ import "./curriculum-catalog.ts";
 import AppRedesign from "./AppRedesign.jsx";
 import "./redesign.css";
 import "./timeline-final-v9.css";
+import "./timeline-row-fit-v10.css";
 
 interface ErrorBoundaryState {
   error: Error | null;
