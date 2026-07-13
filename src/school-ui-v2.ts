@@ -73,15 +73,14 @@ function createPreviewCard(className: string) {
 
 function prepareEducationalPreview() {
   const hero = document.querySelector<HTMLElement>(".hero-visual");
-  if (!hero) return;
+  if (!hero || hero.dataset.educationalPreview === "true") return;
+  hero.dataset.educationalPreview = "true";
   hero.classList.add("school-preview");
 
-  if (!hero.querySelector(".hero-preview-caption")) {
-    const caption = document.createElement("span");
-    caption.className = "hero-preview-caption";
-    caption.textContent = "Ukázka propojení literatury a dějepisu · 1883–1938";
-    hero.appendChild(caption);
-  }
+  const caption = document.createElement("span");
+  caption.className = "hero-preview-caption";
+  caption.textContent = "Ukázka propojení literatury a dějepisu · 1883–1938";
+  hero.appendChild(caption);
 
   const periodValues = [
     ["Rakousko-Uhersko", "1867–1918"],
@@ -181,7 +180,7 @@ function addSchoolOverviewPreset(frame: HTMLElement) {
     if (!inputs || inputs.length < 2 || !apply) return;
     setReactInputValue(inputs[0], "1880");
     setReactInputValue(inputs[1], "2026");
-    apply.click();
+    window.setTimeout(() => apply.click(), 30);
   });
   presetRow.insertBefore(button, presetRow.children[1] || null);
 }
