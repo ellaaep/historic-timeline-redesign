@@ -2,6 +2,7 @@ import { Component, StrictMode, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./world-author-catalog.ts";
+import "./curriculum-catalog.ts";
 import App from "./App.tsx";
 import "./index.css";
 import "./landing.css";
@@ -9,11 +10,13 @@ import "./school.css";
 import "./school-ui-v2.css";
 import "./compressed-history.css";
 import "./adaptive-timeline.css";
+import "./curriculum.css";
 import { installSchoolEnhancements } from "./school-enhancements.ts";
 import { installSchoolLayout } from "./school-layout.ts";
 import { installSchoolUiV2 } from "./school-ui-v2.ts";
 import { installCompressedHistory } from "./compressed-history.ts";
 import { installAdaptiveTimeline } from "./adaptive-timeline.ts";
+import { installCurriculumUi } from "./curriculum-ui.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -97,3 +100,4 @@ installSchoolLayout();
 installSchoolUiV2();
 installCompressedHistory();
 installAdaptiveTimeline();
+installCurriculumUi();
