@@ -2,10 +2,10 @@ import { AUTHORS } from "./data";
 import {
   CERMAT_GENRES,
   CERMAT_MOVEMENTS,
-  PRIMMAT_AUTHOR_TITLES,
+  PRIMMAT_AUTHOR_TITLES as SAMPLE_SCHOOL_AUTHOR_TITLES,
 } from "./curriculum-catalog";
 
-const CERMAT_OVERVIEW = [
+const LITERATURE_OVERVIEW = [
   "Homér",
   "Sofoklés",
   "Dante Alighieri",
@@ -54,6 +54,10 @@ function openAuthorPicker() {
   if (!document.querySelector(".author-dialog")) button?.click();
 }
 
+function openPersonalization() {
+  window.dispatchEvent(new CustomEvent("casovrstvy:open-personalization"));
+}
+
 function selectAuthorTitles(titles: readonly string[]) {
   openAuthorPicker();
   window.setTimeout(() => {
@@ -85,27 +89,38 @@ function addAuthorDialogPresets() {
   const actions = dialog?.querySelector<HTMLElement>(".author-actions");
   if (!dialog || !actions || actions.querySelector(".curriculum-preset")) return;
 
-  const primmat = document.createElement("button");
-  primmat.type = "button";
-  primmat.className = "curriculum-preset primmat";
-  primmat.textContent = "PrimMat · školní seznam";
-  primmat.title = "Vybrat autory všech 60 děl ze školního seznamu pro rok 2025";
-  primmat.addEventListener("click", () => selectAuthorTitles(PRIMMAT_AUTHOR_TITLES));
+  const schoolList = document.createElement("button");
+  schoolList.type = "button";
+  schoolList.className = "curriculum-preset school-list";
+  schoolList.textContent = "Ukázkový školní seznam";
+  schoolList.title = "Vybrat autory z rozsáhlého ukázkového seznamu 60 děl";
+  schoolList.addEventListener("click", () => selectAuthorTitles(SAMPLE_SCHOOL_AUTHOR_TITLES));
 
-  const cermat = document.createElement("button");
-  cermat.type = "button";
-  cermat.className = "curriculum-preset cermat";
-  cermat.textContent = "CERMAT · průřez";
-  cermat.title = "Vybrat reprezentativní autory napříč literární historií";
-  cermat.addEventListener("click", () => selectAuthorTitles(CERMAT_OVERVIEW));
+  const overview = document.createElement("button");
+  overview.type = "button";
+  overview.className = "curriculum-preset overview";
+  overview.textContent = "Literární průřez";
+  overview.title = "Vybrat reprezentativní autory napříč literární historií";
+  overview.addEventListener("click", () => selectAuthorTitles(LITERATURE_OVERVIEW));
 
-  actions.prepend(cermat);
-  actions.prepend(primmat);
+  const upload = document.createElement("button");
+  upload.type = "button";
+  upload.className = "curriculum-preset upload-list";
+  upload.textContent = "Nahrát vlastní seznam";
+  upload.title = "Vytvořit osu podle vlastního školního nebo čtenářského seznamu";
+  upload.addEventListener("click", () => {
+    dialog.closest(".dialog-backdrop")?.querySelector<HTMLButtonElement>(".dialog-close")?.click();
+    openPersonalization();
+  });
+
+  actions.prepend(upload);
+  actions.prepend(overview);
+  actions.prepend(schoolList);
 
   const note = document.createElement("p");
   note.className = "curriculum-dialog-note";
   note.innerHTML =
-    "<strong>Obsah podle dodaných školních materiálů.</strong> Katalog zahrnuje školní seznam 60 děl, autory požadované CERMATem, literární směry, skupiny a žánry.";
+    "<strong>Veřejný literární katalog.</strong> Obsahuje více školních a maturitních okruhů, literární směry, skupiny, žánry a přes sto autorů. Není vázaný na jedinou školu.";
   actions.insertAdjacentElement("afterend", note);
 }
 
@@ -123,38 +138,43 @@ function openCurriculumDialog() {
   const backdrop = document.createElement("div");
   backdrop.className = "curriculum-backdrop";
   backdrop.innerHTML = `
-    <section class="curriculum-dialog" role="dialog" aria-modal="true" aria-label="Maturitní literatura">
+    <section class="curriculum-dialog" role="dialog" aria-modal="true" aria-label="Literární díla a směry">
       <header>
         <div>
-          <span>Maturitní obsah</span>
-          <h2>Literatura podle školy a CERMATu</h2>
-          <p>Školní seznam PrimMat 2025, maturitní literární historie, směry, autoři, díla a žánry na jednom místě.</p>
+          <span>Literární přehled</span>
+          <h2>Díla, autoři a směry</h2>
+          <p>Veřejný katalog pro studenty a učitele. Můžeš použít základní výběr, maturitní průřez nebo si vytvořit vlastní osu nahráním svého seznamu.</p>
         </div>
         <button type="button" class="curriculum-close" aria-label="Zavřít">×</button>
       </header>
 
-      <div class="curriculum-source-grid">
+      <div class="curriculum-source-grid three-columns">
         <article>
-          <strong>PrimMat · 60 děl</strong>
-          <p>Kompletní školní nabídka od Dekameronu přes Kytici a Proměnu až po Hanu a Šikmý kostel.</p>
-          <button type="button" data-action="primmat">Zobrazit autory školního seznamu</button>
+          <strong>Základní katalog děl</strong>
+          <p>Rozsáhlý výběr známých českých i světových děl od starověku po současnost.</p>
+          <button type="button" data-action="school-list">Zobrazit ukázkový výběr</button>
         </article>
         <article>
-          <strong>CERMAT · literární přehled</strong>
-          <p>Autoři a směry, o kterých má mít maturant základní povědomí v literárněhistorických souvislostech.</p>
-          <button type="button" data-action="cermat">Zobrazit reprezentativní průřez</button>
+          <strong>Maturitní literární průřez</strong>
+          <p>Autoři a směry, o kterých má mít středoškolák základní povědomí v historických souvislostech.</p>
+          <button type="button" data-action="overview">Zobrazit literární průřez</button>
+        </article>
+        <article class="personalized-source">
+          <strong>Vlastní seznam</strong>
+          <p>Nahraj PDF, DOCX, TXT, CSV nebo JSON a aplikace z něj sestaví vlastní autory a díla.</p>
+          <button type="button" data-action="upload">Personalizovat časovou osu</button>
         </article>
       </div>
 
       <section class="curriculum-requirements">
-        <h3>Pravidla výběru 20 maturitních děl</h3>
+        <h3>Obvyklá pravidla výběru 20 maturitních děl</h3>
         <div>
           <span><b>2+</b> do konce 18. století</span>
           <span><b>3+</b> literatura 19. století</span>
           <span><b>4+</b> světová literatura 20. a 21. století</span>
           <span><b>5+</b> česká literatura 20. a 21. století</span>
         </div>
-        <p>V seznamu musí být alespoň dvě prózy, dvě poezie a dvě dramata. Od jednoho autora lze zvolit nejvýše dvě díla.</p>
+        <p>Konkrétní pravidla se mohou lišit podle školy. Běžně se vyžaduje zastoupení prózy, poezie a dramatu a nejvýše dvě díla od jednoho autora.</p>
       </section>
 
       <details open>
@@ -168,8 +188,11 @@ function openCurriculumDialog() {
       </details>
 
       <footer>
-        <span>Zdroj obsahu: školní seznam PrimMat ze dne 1. 9. 2025 a katalog požadavků CERMAT.</span>
-        <button type="button" data-action="authors">Otevřít vlastní výběr autorů</button>
+        <span>Obsah vychází z veřejných maturitních požadavků a ukázkových školních seznamů. Vlastní soubor se zpracovává v prohlížeči.</span>
+        <div class="curriculum-footer-actions">
+          <button type="button" data-action="upload">Nahrát vlastní seznam</button>
+          <button type="button" data-action="authors">Ruční výběr autorů</button>
+        </div>
       </footer>
     </section>
   `;
@@ -177,13 +200,17 @@ function openCurriculumDialog() {
   backdrop.addEventListener("click", (event) => {
     const target = event.target as Element;
     if (target === backdrop || target.closest(".curriculum-close")) closeCurriculumDialog();
-    if (target.closest('[data-action="primmat"]')) {
+    if (target.closest('[data-action="school-list"]')) {
       closeCurriculumDialog();
-      selectAuthorTitles(PRIMMAT_AUTHOR_TITLES);
+      selectAuthorTitles(SAMPLE_SCHOOL_AUTHOR_TITLES);
     }
-    if (target.closest('[data-action="cermat"]')) {
+    if (target.closest('[data-action="overview"]')) {
       closeCurriculumDialog();
-      selectAuthorTitles(CERMAT_OVERVIEW);
+      selectAuthorTitles(LITERATURE_OVERVIEW);
+    }
+    if (target.closest('[data-action="upload"]')) {
+      closeCurriculumDialog();
+      openPersonalization();
     }
     if (target.closest('[data-action="authors"]')) {
       closeCurriculumDialog();
@@ -203,8 +230,8 @@ function installSidebarEntry() {
   button.type = "button";
   button.className = "curriculum-open-button";
   button.innerHTML = `
-    <span class="curriculum-icon">M</span>
-    <span><strong>Maturitní literatura</strong><small>PrimMat 60 děl · CERMAT</small></span>
+    <span class="curriculum-icon">L</span>
+    <span><strong>Literární díla a směry</strong><small>veřejný katalog · vlastní seznam</small></span>
     <b>${AUTHORS.length}+</b>
   `;
   button.addEventListener("click", openCurriculumDialog);
