@@ -5,8 +5,10 @@ import App from "./App.tsx";
 import "./index.css";
 import "./landing.css";
 import "./school.css";
+import "./school-ui-v2.css";
 import { installSchoolEnhancements } from "./school-enhancements.ts";
 import { installSchoolLayout } from "./school-layout.ts";
+import { installSchoolUiV2 } from "./school-ui-v2.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -87,3 +89,4 @@ createRoot(rootElement).render(
 
 installSchoolEnhancements();
 installSchoolLayout();
+installSchoolUiV2();
