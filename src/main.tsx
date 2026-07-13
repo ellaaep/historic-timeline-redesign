@@ -11,12 +11,14 @@ import "./school-ui-v2.css";
 import "./compressed-history.css";
 import "./adaptive-timeline.css";
 import "./curriculum.css";
+import "./personalization.css";
 import { installSchoolEnhancements } from "./school-enhancements.ts";
 import { installSchoolLayout } from "./school-layout.ts";
 import { installSchoolUiV2 } from "./school-ui-v2.ts";
 import { installCompressedHistory } from "./compressed-history.ts";
 import { installAdaptiveTimeline } from "./adaptive-timeline.ts";
 import { installCurriculumUi } from "./curriculum-ui.ts";
+import { installPersonalization } from "./personalization.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -101,3 +103,4 @@ installSchoolUiV2();
 installCompressedHistory();
 installAdaptiveTimeline();
 installCurriculumUi();
+installPersonalization();
