@@ -12,11 +12,6 @@ import "./timeline-polish-v3.css";
 import "./timeline-scale-v4.css";
 import "./timeline-localize-v5.css";
 import "./timeline-cleanup-v6.css";
-import { installTimelineUxEnhancements } from "./timeline-ux-enhancements.ts";
-import { installTimelinePolishV3 } from "./timeline-polish-v3.ts";
-import { installTimelineScaleV4 } from "./timeline-scale-v4.ts";
-import { installTimelineLocalizationV5 } from "./timeline-localize-v5.ts";
-import { installTimelineCleanupV6 } from "./timeline-cleanup-v6.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -60,7 +55,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
         >
           <h1 style={{ margin: "0 0 10px", fontSize: 26 }}>Časovrstvy se nepodařilo spustit</h1>
           <p style={{ margin: "0 0 14px", lineHeight: 1.6 }}>
-            Nová verze narazila na chybu při načítání. Obnov stránku a případně zkopíruj text níže.
+            Aplikace narazila na chybu při načítání. Obnov stránku a případně zkopíruj text níže.
           </p>
           <code
             style={{
@@ -86,6 +81,8 @@ if (!rootElement) {
   throw new Error("Na stránce chybí kořenový prvek #root.");
 }
 
+document.title = "Časovrstvy";
+
 createRoot(rootElement).render(
   <StrictMode>
     <ErrorBoundary>
@@ -93,9 +90,3 @@ createRoot(rootElement).render(
     </ErrorBoundary>
   </StrictMode>,
 );
-
-installTimelineUxEnhancements();
-installTimelinePolishV3();
-installTimelineScaleV4();
-installTimelineLocalizationV5();
-installTimelineCleanupV6();
