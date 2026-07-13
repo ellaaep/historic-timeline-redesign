@@ -7,6 +7,8 @@ import "./curriculum-catalog.ts";
 import AppRedesign from "./AppRedesign.jsx";
 import "./redesign.css";
 import "./timeline-gallery.css";
+import "./timeline-readable.css";
+import { installTimelineUxEnhancements } from "./timeline-ux-enhancements.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -83,3 +85,5 @@ createRoot(rootElement).render(
     </ErrorBoundary>
   </StrictMode>,
 );
+
+installTimelineUxEnhancements();
