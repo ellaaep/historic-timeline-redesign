@@ -1,0 +1,54 @@
+name: Validate UX redesign
+
+on:
+  push:
+    branches:
+      - ux-redesign-v2
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ux-redesign-v2
+
+      - name: Apply small source safeguards
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("src/AppRedesign.tsx")
+          text = path.read_text()
+          for unused in ["  Clock3,\n", "  FileText,\n", "  Menu,\n", "  type Period,\n"]:
+              text = text.replace(unused, "")
+          text = text.replace("  useDeferredValue,\n", "  createElement,\n  useDeferredValue,\n", 1)
+          text = text.replace("itemIcon(item)({ size: 16 })", "createElement(itemIcon(item) as any, { size: 16 })")
+          text = text.replace("itemIcon(item)({ size: 44, strokeWidth: 1.5 })", "createElement(itemIcon(item) as any, { size: 44, strokeWidth: 1.5 })")
+          text = text.replace(
+              "const result = await (mammoth as any).extractRawText({ arrayBuffer: await file.arrayBuffer() });",
+              "const reader = (mammoth as any).extractRawText || (mammoth as any).default?.extractRawText;\n    if (!reader) throw new Error(\"Čtení DOCX není dostupné.\");\n    const result = await reader({ arrayBuffer: await file.arrayBuffer() });",
+          )
+          path.write_text(text)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Commit safeguards
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/AppRedesign.tsx
+            git commit -m "Harden redesign build"
+            git push
+          fi
