@@ -1,0 +1,198 @@
+/* Clearer school preview and an explicit fullscreen action below the embedded app */
+.topbar > button[title="Celá obrazovka"] {
+  display: none !important;
+}
+
+.hero-visual.school-preview {
+  min-height: 570px !important;
+  transform: none !important;
+}
+
+.hero-preview-caption {
+  position: absolute;
+  z-index: 9;
+  top: 58px;
+  left: 20px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.hero-sample-card .sample-kind {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--burgundy);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.hero-visual.school-preview .hero-periods {
+  top: 86px;
+}
+
+.hero-visual.school-preview .hero-grid-lines {
+  inset: 158px 0 0;
+}
+
+.hero-visual.school-preview .card-one {
+  top: 190px;
+  left: 4%;
+  width: 38%;
+}
+
+.hero-visual.school-preview .card-two {
+  top: 282px;
+  left: 14%;
+  width: 34%;
+}
+
+.hero-visual.school-preview .card-three {
+  top: 390px;
+  left: 33%;
+  width: 40%;
+  border-left-color: #159ee5;
+}
+
+.hero-visual.school-preview .card-four {
+  top: 190px;
+  left: 58%;
+  width: 37%;
+}
+
+.hero-visual.school-preview .card-five {
+  top: 282px;
+  left: 55%;
+  width: 36%;
+}
+
+.hero-visual.school-preview .hero-crosshair {
+  top: 158px;
+  left: 51%;
+  background: #4b5567;
+}
+
+.hero-visual.school-preview .hero-crosshair::before {
+  display: none;
+}
+
+.hero-visual.school-preview .hero-crosshair span {
+  background: #3f4858;
+}
+
+.hero-visual.school-preview .hero-school-context {
+  bottom: 24px;
+  font-size: 10px;
+}
+
+.school-fullscreen-launch {
+  width: min(1100px, calc(100% - 30px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 22px auto 0;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--panel);
+  box-shadow: var(--shadow-sm);
+}
+
+.school-fullscreen-launch-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.school-fullscreen-launch-copy strong {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.school-fullscreen-launch-copy span {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.school-fullscreen-launch button {
+  min-height: 46px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 17px;
+  border-radius: 11px;
+  color: #fff;
+  background: var(--burgundy);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--burgundy) 22%, transparent);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.school-fullscreen-launch button:hover {
+  transform: translateY(-1px);
+  background: var(--burgundy-dark);
+}
+
+.school-fullscreen-launch svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.school-overview-preset {
+  border-color: color-mix(in srgb, var(--burgundy) 35%, var(--line)) !important;
+  color: var(--burgundy) !important;
+  background: color-mix(in srgb, var(--burgundy) 7%, var(--panel)) !important;
+  font-weight: 850 !important;
+}
+
+@media (max-width: 900px) {
+  .hero-visual.school-preview {
+    min-height: 535px !important;
+  }
+
+  .hero-visual.school-preview .hero-sample-card {
+    width: 42%;
+  }
+
+  .school-fullscreen-launch {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .school-fullscreen-launch button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .hero-visual.school-preview {
+    min-height: 610px !important;
+  }
+
+  .hero-visual.school-preview .card-one,
+  .hero-visual.school-preview .card-two,
+  .hero-visual.school-preview .card-three,
+  .hero-visual.school-preview .card-four,
+  .hero-visual.school-preview .card-five {
+    left: 8%;
+    width: 84%;
+  }
+
+  .hero-visual.school-preview .card-one { top: 170px; }
+  .hero-visual.school-preview .card-two { top: 242px; }
+  .hero-visual.school-preview .card-four { top: 314px; }
+  .hero-visual.school-preview .card-five { top: 386px; }
+  .hero-visual.school-preview .card-three { top: 458px; }
+  .hero-school-links { display: none; }
+}
