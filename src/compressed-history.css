@@ -1,0 +1,152 @@
+/* The school overview starts at the first broad literary/architectural movements.
+   Older millennia stay available through a compact break instead of stretching the whole axis. */
+.period-strip.has-compressed-history {
+  min-height: 180px !important;
+}
+
+.compressed-history-nav {
+  position: relative;
+  z-index: 86;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px dashed color-mix(in srgb, var(--line-strong) 76%, transparent);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--panel-soft) 84%, transparent) 0 8px,
+      color-mix(in srgb, var(--panel) 94%, transparent) 8px 16px
+    );
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.compressed-history-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.compressed-history-break {
+  min-width: max-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding-right: 11px;
+  border-right: 1px solid var(--line-strong);
+}
+
+.compressed-history-zigzag {
+  width: 27px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  color: var(--burgundy);
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: -5px;
+  transform: skewX(-12deg);
+}
+
+.compressed-history-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.compressed-history-copy strong {
+  color: var(--ink);
+  font-size: 9.5px;
+  font-weight: 850;
+}
+
+.compressed-history-copy small {
+  color: var(--muted);
+  font-size: 7.5px;
+  font-weight: 750;
+}
+
+.compressed-history-nav > button {
+  min-height: 29px;
+  flex: 0 0 auto;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--panel-strong) 94%, transparent);
+  font-size: 8.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.compressed-history-nav > button:hover {
+  border-color: var(--line-strong);
+  background: var(--panel-strong);
+  transform: translateY(-1px);
+}
+
+.compressed-history-nav > button.overview {
+  margin-left: auto;
+  border-color: color-mix(in srgb, var(--burgundy) 42%, var(--line));
+  color: var(--burgundy);
+  background: color-mix(in srgb, var(--burgundy) 8%, var(--panel));
+}
+
+.preset-row .compressed-overview-button {
+  border-color: color-mix(in srgb, var(--burgundy) 42%, var(--line)) !important;
+  color: var(--burgundy) !important;
+  background: color-mix(in srgb, var(--burgundy) 8%, var(--panel)) !important;
+  font-weight: 850 !important;
+}
+
+.compressed-axis-note {
+  position: absolute;
+  z-index: 91;
+  top: 184px;
+  left: 10px;
+  width: 102px;
+  padding: 6px 7px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--panel-strong) 94%, transparent);
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+  pointer-events: none;
+}
+
+html.dark .compressed-history-nav,
+html[data-theme="dark"] .compressed-history-nav {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--panel-soft) 88%, transparent) 0 8px,
+      color-mix(in srgb, var(--panel) 96%, transparent) 8px 16px
+    );
+}
+
+@media (max-width: 760px) {
+  .period-strip.has-compressed-history {
+    min-height: 154px !important;
+  }
+
+  .compressed-history-nav {
+    padding-inline: 8px;
+  }
+
+  .compressed-history-copy strong {
+    font-size: 8.5px;
+  }
+
+  .compressed-history-nav > button.overview {
+    margin-left: 0;
+  }
+
+  .compressed-axis-note {
+    display: none;
+  }
+}
