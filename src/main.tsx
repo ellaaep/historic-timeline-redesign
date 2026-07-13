@@ -6,6 +6,7 @@ import "./curriculum-catalog.ts";
 // @ts-ignore The isolated redesign prototype intentionally uses a JSX runtime module.
 import AppRedesign from "./AppRedesign.jsx";
 import "./redesign.css";
+import "./timeline-gallery.css";
 
 interface ErrorBoundaryState {
   error: Error | null;
