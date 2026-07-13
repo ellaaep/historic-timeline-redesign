@@ -10,9 +10,11 @@ import "./timeline-gallery.css";
 import "./timeline-readable.css";
 import "./timeline-polish-v3.css";
 import "./timeline-scale-v4.css";
+import "./timeline-localize-v5.css";
 import { installTimelineUxEnhancements } from "./timeline-ux-enhancements.ts";
 import { installTimelinePolishV3 } from "./timeline-polish-v3.ts";
 import { installTimelineScaleV4 } from "./timeline-scale-v4.ts";
+import { installTimelineLocalizationV5 } from "./timeline-localize-v5.ts";
 
 interface ErrorBoundaryState {
   error: Error | null;
@@ -93,3 +95,4 @@ createRoot(rootElement).render(
 installTimelineUxEnhancements();
 installTimelinePolishV3();
 installTimelineScaleV4();
+installTimelineLocalizationV5();
