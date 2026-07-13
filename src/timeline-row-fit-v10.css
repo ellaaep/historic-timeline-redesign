@@ -1,0 +1,313 @@
+/* Compact, readable shelves for every timeline lane.
+   Items remain aligned to their year, but crowded years are distributed
+   across fixed shelves inside the same thematic row. */
+
+.timeline-app {
+  height: min(830px, 92vh);
+  min-height: 680px;
+}
+
+.timeline-lane {
+  height: 132px !important;
+  min-height: 132px !important;
+  overflow: hidden !important;
+}
+
+.timeline-lane header {
+  top: 6px !important;
+  left: 8px !important;
+  height: 27px !important;
+  max-width: 142px !important;
+  padding: 3px 8px 3px 5px !important;
+}
+
+.timeline-lane header strong {
+  font-size: 9px !important;
+}
+
+/* Four clean shelves for compact image-led items. */
+.timeline-item:not(.author-item) {
+  width: 92px !important;
+  min-width: 92px !important;
+  max-width: 92px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 5px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(4n + 1) {
+  top: 34px !important;
+}
+
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(4n + 2) {
+  top: 59px !important;
+}
+
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(4n + 3) {
+  top: 84px !important;
+}
+
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(4n) {
+  top: 109px !important;
+}
+
+.timeline-item:not(.author-item) .timeline-media,
+.timeline-item:not(.author-item) .item-icon {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  flex: 0 0 24px !important;
+  border: 0 !important;
+  border-radius: 5px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.timeline-item:not(.author-item) .timeline-media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.timeline-item:not(.author-item) .timeline-media svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.timeline-item:not(.author-item) .item-copy {
+  width: 63px !important;
+  max-width: 63px !important;
+  min-width: 0 !important;
+  align-items: flex-start !important;
+  gap: 1px !important;
+  text-align: left !important;
+}
+
+.timeline-item:not(.author-item) .item-copy strong {
+  width: 100% !important;
+  max-width: 63px !important;
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  white-space: normal !important;
+  font-size: 7.8px !important;
+  line-height: 1.04 !important;
+  text-align: left !important;
+}
+
+.timeline-item:not(.author-item) .item-copy small {
+  font-size: 5.9px !important;
+  line-height: 1 !important;
+  text-align: left !important;
+}
+
+/* Book covers remain recognisable while using the same compact shelf. */
+.work-item {
+  width: 88px !important;
+  min-width: 88px !important;
+  max-width: 88px !important;
+}
+
+.work-item .timeline-media,
+.work-item .item-icon {
+  width: 18px !important;
+  height: 24px !important;
+  min-width: 18px !important;
+  flex: 0 0 18px !important;
+  border-radius: 3px !important;
+}
+
+.work-item .timeline-media img {
+  object-fit: contain !important;
+}
+
+.work-item .item-copy {
+  width: 65px !important;
+  max-width: 65px !important;
+}
+
+/* Portrait categories use three slightly taller shelves. */
+.timeline-item.lane-rulers,
+.timeline-item.lane-figures {
+  width: 98px !important;
+  min-width: 98px !important;
+  max-width: 98px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+}
+
+.lane-canvas > button.timeline-item.lane-rulers:nth-of-type(3n + 1),
+.lane-canvas > button.timeline-item.lane-figures:nth-of-type(3n + 1) {
+  top: 34px !important;
+}
+
+.lane-canvas > button.timeline-item.lane-rulers:nth-of-type(3n + 2),
+.lane-canvas > button.timeline-item.lane-figures:nth-of-type(3n + 2) {
+  top: 67px !important;
+}
+
+.lane-canvas > button.timeline-item.lane-rulers:nth-of-type(3n),
+.lane-canvas > button.timeline-item.lane-figures:nth-of-type(3n) {
+  top: 100px !important;
+}
+
+.timeline-item.lane-rulers .timeline-media,
+.timeline-item.lane-figures .timeline-media {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  flex: 0 0 30px !important;
+  border: 2px solid rgba(255, 250, 240, .96) !important;
+  border-radius: 50% !important;
+}
+
+.timeline-item.lane-rulers .item-copy,
+.timeline-item.lane-figures .item-copy {
+  width: 63px !important;
+  max-width: 63px !important;
+}
+
+/* Buildings get a landscape thumbnail but still remain inside a shelf. */
+.timeline-item.lane-monuments {
+  width: 106px !important;
+  min-width: 106px !important;
+  max-width: 106px !important;
+}
+
+.timeline-item.lane-monuments .timeline-media {
+  width: 34px !important;
+  height: 24px !important;
+  min-width: 34px !important;
+  flex: 0 0 34px !important;
+}
+
+.timeline-item.lane-monuments .item-copy {
+  width: 67px !important;
+  max-width: 67px !important;
+}
+
+/* Authors retain lifespan lines and occupy two stable shelves. */
+.author-item {
+  height: 48px !important;
+  min-height: 48px !important;
+}
+
+.lane-canvas > button.author-item:nth-of-type(odd) {
+  top: 35px !important;
+}
+
+.lane-canvas > button.author-item:nth-of-type(even) {
+  top: 79px !important;
+}
+
+.author-item::before {
+  left: 17px !important;
+  top: 17px !important;
+}
+
+.author-item::after {
+  top: 13px !important;
+  width: 7px !important;
+  height: 7px !important;
+}
+
+.timeline-cutout {
+  width: 35px !important;
+  height: 35px !important;
+}
+
+.author-item .item-copy {
+  top: 34px !important;
+  max-width: 120px !important;
+  padding: 2px 5px !important;
+}
+
+.author-item .item-copy strong {
+  max-width: 112px !important;
+  font-size: 7.4px !important;
+}
+
+.author-item .item-copy small {
+  font-size: 5.8px !important;
+}
+
+/* More visible and legible literary/historical eras. */
+.timeline-workspace {
+  grid-template-rows: 70px 116px minmax(0, 1fr) auto !important;
+}
+
+.period-strip,
+.period-track {
+  height: 116px !important;
+  min-height: 116px !important;
+}
+
+.period-track button {
+  height: 30px !important;
+  min-width: 82px !important;
+  max-width: 168px !important;
+  padding: 3px 8px !important;
+  border-width: 2px !important;
+  border-left-width: 4px !important;
+  border-radius: 8px !important;
+  background: color-mix(in srgb, currentColor 15%, #fffaf0) !important;
+  box-shadow: 0 3px 9px rgba(55, 36, 24, .12) !important;
+  opacity: 1 !important;
+}
+
+.period-track strong {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  white-space: normal !important;
+  font-size: 9.2px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+.period-track small {
+  margin-top: 2px !important;
+  font-size: 6.2px !important;
+  font-weight: 750 !important;
+}
+
+.period-track button[title^="Baroko"],
+.period-track button[title^="Renesance"],
+.period-track button[title^="Romantismus"],
+.period-track button[title^="Realismus"],
+.period-track button[title^="První republika"] {
+  background: color-mix(in srgb, currentColor 25%, #fff8e9) !important;
+  border-color: currentColor !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, currentColor 22%, transparent) !important;
+}
+
+@media (max-width: 900px) {
+  .timeline-app {
+    height: 86vh;
+    min-height: 640px;
+  }
+
+  .timeline-item:not(.author-item) {
+    width: 84px !important;
+    min-width: 84px !important;
+    max-width: 84px !important;
+  }
+
+  .timeline-item:not(.author-item) .item-copy {
+    width: 55px !important;
+    max-width: 55px !important;
+  }
+}

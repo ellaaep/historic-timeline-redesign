@@ -1,0 +1,14 @@
+/* Clear Czech state labels instead of ON/OFF. */
+.lane-toggle-list button {
+  grid-template-columns: 31px minmax(0, 1fr) 70px !important;
+}
+
+.lane-toggle-list i {
+  min-width: 66px !important;
+  padding: 5px 8px !important;
+  font-style: normal;
+  font-size: 8.5px !important;
+  font-weight: 850 !important;
+  text-align: center;
+  text-transform: none;
+}

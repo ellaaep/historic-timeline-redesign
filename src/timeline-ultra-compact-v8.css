@@ -1,0 +1,237 @@
+/* Ultra-compact image-first timeline. This file is intentionally loaded last. */
+
+.timeline-app {
+  --marker-size: 34px;
+}
+
+.timeline-workspace {
+  grid-template-rows: 72px 92px minmax(0, 1fr) auto !important;
+}
+
+.period-strip,
+.period-track {
+  height: 92px !important;
+  min-height: 92px !important;
+}
+
+.period-strip-label {
+  min-height: 92px !important;
+}
+
+.period-track button {
+  height: 24px !important;
+  min-width: 70px !important;
+  max-width: 170px !important;
+  padding: 2px 6px !important;
+}
+
+.period-track strong {
+  font-size: 8px !important;
+}
+
+.period-track small {
+  font-size: 6px !important;
+}
+
+/* Rows are roughly 35–40 % shorter than the previous gallery version. */
+.timeline-lane,
+.timeline-lane:has(.author-item),
+.timeline-lane:has(.work-item) {
+  min-height: 112px !important;
+  height: 112px !important;
+  overflow: hidden !important;
+}
+
+.timeline-lane header {
+  top: 5px !important;
+  left: 6px !important;
+  height: 25px !important;
+  padding: 2px 7px 2px 4px !important;
+  gap: 5px !important;
+  border-radius: 7px !important;
+}
+
+.timeline-lane header > span {
+  width: 19px !important;
+  height: 19px !important;
+  flex-basis: 19px !important;
+}
+
+.timeline-lane header > span svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.timeline-lane header strong {
+  font-size: 8.5px !important;
+}
+
+/* Remove wide cards completely. Every non-author item is an image with its name underneath. */
+.timeline-item:not(.author-item) {
+  width: 68px !important;
+  min-width: 68px !important;
+  max-width: 68px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Two deterministic visual rows without large boxes. */
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(odd) {
+  top: 29px !important;
+}
+
+.lane-canvas > button.timeline-item:not(.author-item):nth-of-type(even) {
+  top: 65px !important;
+}
+
+.timeline-item:not(.author-item):hover,
+.timeline-item:not(.author-item):focus-visible,
+.timeline-item:not(.author-item).focused {
+  transform: translateY(-2px) scale(1.04) !important;
+  filter: drop-shadow(0 5px 5px rgba(38, 26, 19, .20)) !important;
+  box-shadow: none !important;
+}
+
+.timeline-item:not(.author-item) .timeline-media,
+.timeline-item:not(.author-item) .item-icon {
+  width: var(--marker-size) !important;
+  height: var(--marker-size) !important;
+  min-width: var(--marker-size) !important;
+  flex: 0 0 var(--marker-size) !important;
+  border: 1px solid color-mix(in srgb, var(--lane-strong) 26%, #e4d8c9) !important;
+  border-radius: 9px !important;
+  background: color-mix(in srgb, var(--lane-soft) 62%, #fffdf8) !important;
+  box-shadow: 0 3px 7px rgba(43, 29, 20, .12) !important;
+}
+
+.timeline-item:not(.author-item) .timeline-media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Portrait categories use circular photos. */
+.timeline-item.lane-rulers .timeline-media,
+.timeline-item.lane-figures .timeline-media {
+  border-radius: 50% !important;
+}
+
+.timeline-item.lane-rulers .timeline-media img,
+.timeline-item.lane-figures .timeline-media img {
+  object-position: center top !important;
+}
+
+/* Books remain recognisable as small covers. */
+.work-item {
+  width: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+}
+
+.work-item .timeline-media,
+.work-item .item-icon {
+  width: 27px !important;
+  height: 33px !important;
+  min-width: 27px !important;
+  flex-basis: 33px !important;
+  border-radius: 4px !important;
+}
+
+.work-item .timeline-media img {
+  object-fit: contain !important;
+  background: #eee3d1 !important;
+}
+
+.timeline-item:not(.author-item) .item-copy {
+  width: 68px !important;
+  max-width: 68px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 1px 2px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+
+.timeline-item:not(.author-item) .item-copy strong {
+  width: 100% !important;
+  max-width: 68px !important;
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  white-space: normal !important;
+  color: #30221c !important;
+  font-size: 6.8px !important;
+  font-weight: 800 !important;
+  line-height: 1.02 !important;
+  text-align: center !important;
+  text-shadow: 0 1px rgba(255,255,255,.85) !important;
+}
+
+.timeline-item:not(.author-item) .item-copy small {
+  display: none !important;
+}
+
+/* Authors keep the lifespan line, but the portrait and label are also smaller. */
+.author-item {
+  height: 42px !important;
+  min-height: 42px !important;
+}
+
+.lane-canvas > button.author-item:nth-of-type(odd) {
+  top: 28px !important;
+}
+
+.lane-canvas > button.author-item:nth-of-type(even) {
+  top: 67px !important;
+}
+
+.author-item::before {
+  top: 18px !important;
+  left: 17px !important;
+}
+
+.author-item::after {
+  top: 14px !important;
+}
+
+.timeline-cutout {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.author-item .item-copy {
+  top: 34px !important;
+  max-width: 112px !important;
+  padding: 2px 5px !important;
+}
+
+.author-item .item-copy strong {
+  max-width: 102px !important;
+  font-size: 7px !important;
+}
+
+.author-item .item-copy small {
+  font-size: 5.8px !important;
+}
+
+/* Keep compact Czech switches. */
+.lane-toggle-list i {
+  min-width: 49px !important;
+  font-size: 6.5px !important;
+}

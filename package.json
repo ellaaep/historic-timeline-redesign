@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "cp app.template.html index.html && vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit -p tsconfig.app.json --pretty",
     "lint": "eslint .",
