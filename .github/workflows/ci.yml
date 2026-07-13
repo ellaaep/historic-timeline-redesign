@@ -12,7 +12,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Build application
+        id: build
+        continue-on-error: true
+        run: npm run build > redesign-build.log 2>&1
+      - name: Upload build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: redesign-build-log
+          path: redesign-build.log
+      - name: Fail when build failed
+        if: steps.build.outcome == 'failure'
+        run: |
+          tail -n 80 redesign-build.log
+          exit 1
